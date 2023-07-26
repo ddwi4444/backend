@@ -17,4 +17,3 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::post('/registerMembership', App\Http\Controllers\Api\RegisterMembershipController::class)->name('registerMembership');

@@ -98,7 +98,7 @@ class AuthController extends Controller
         $mailData = [
             "title" => "Register Email Verifikasi",
             "firstname" => "Hi, ".$firstname,
-            "body1" => "Thank you for creating an account with us. Don't forget to complete your registration!",
+            "body1" => "Thank you for creating an account with us.",
             "body2" => "Please click on the link below or copy it into the address bar of your browser to confirm your email address: ",
             
             "verification_code" => $verification_code

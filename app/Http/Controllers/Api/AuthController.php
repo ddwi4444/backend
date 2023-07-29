@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Str;
 use App\Mail\RegisterMail;
+use Ramsey\Uuid\Uuid;
 
 
 
@@ -76,6 +77,7 @@ class AuthController extends Controller
         
 
         $user = User::create([
+            'id'       => Uuid::uuid4()->getHex(), // toString();
             'email'     => request('email'),
             'username'     => request('username'),
             'password'  => Hash::make(request('password')),

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('membership_verifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('membership_id');
+            $table->string('membership_id', 32)->references('id')->on('memberships');
             $table->string('token');
 
             $table->foreign('membership_id')->references('id')->on('memberships')->onDelete('cascade');

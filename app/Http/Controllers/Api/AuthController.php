@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
+use JWTAuth;
+use Validator, DB, Hash, Mail;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Mail\Message;
+use Illuminate\Support\Str;
+use App\Mail\RegisterMail;
+
+
 
 
 class AuthController extends Controller
@@ -16,10 +22,10 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    // }
 
     // Login
     public function register()
@@ -39,7 +45,36 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        $email = request('email');
+        $username = request('username');
+        $password = request('password');
+        $firstname = request('firstname');
+        $lastname = request('lastname');
+
         //create userMembership
+        // $user = User::create([
+        //     'email'     => request('email'),
+        //     'username'     => request('username'),
+        //     'password'  => Hash::make(request('password')),
+        //     'firstname'      => request('firstname'),
+        //     'lastname'      => request('lastname'),
+        // ]);
+
+        // $verification_code = Str::random(30); //Generate verification code
+        // DB::table('membership_verifications')->insert(['membership_id'=>$user->id,'token'=>$verification_code]);
+
+        $subject = "Please verify your email address.";
+        // Mail::send('email.verify', ['name' => $firstname, 'verification_code' => $verification_code],
+        //     function($mail) use ($email, $firstname, $subject){
+        //         $mail->from(getenv('FROM_EMAIL_ADDRESS'), "From Historical Art Fantasia");
+        //         $mail->to($email, $firstname);
+        //         $mail->subject($subject);
+        //     });
+
+        // $token = \Str::random(25);
+
+        
+
         $user = User::create([
             'email'     => request('email'),
             'username'     => request('username'),
@@ -48,19 +83,60 @@ class AuthController extends Controller
             'lastname'      => request('lastname'),
         ]);
 
-        //return response JSON user is created
-        if($user) {
-            return response()->json([
-                'success' => true,
-                'user'    => $user,  
-            ], 201);
-        }
+        $verification_code = Str::random(30); //Generate verification code
+        DB::table('membership_verifications')->insert(['membership_id'=>$user->id,'token'=>$verification_code]);
 
-        //return JSON process insert failed 
-        return response()->json([
-            'success' => false,
-        ], 409);
+            $this->sendEmail($email, $verification_code, $firstname);
+
+        return response()->json(['success'=> true, 'message'=> 'Thanks for signing up! Please check your email to complete your registration.']);
     }
+
+    // TO send email
+    public function sendEmail($email, $verification_code, $firstname){
+        $mailData = [
+            "title" => "Register Email Verifikasi",
+            "firstname" => "Hi, ".$firstname,
+            "body1" => "Thank you for creating an account with us. Don't forget to complete your registration!",
+            "body2" => "Please click on the link below or copy it into the address bar of your browser to confirm your email address: ",
+            
+            "verification_code" => $verification_code
+        ];
+
+        Mail::to($email)->send(new RegisterMail($mailData));
+    }
+
+    /*
+    * API Verify User
+    *
+    * @param Request $request
+    * @return \Illuminate\Http\JsonResponse
+    */
+   public function verifyUser($verification_code)
+   {
+       $check = DB::table('membership_verifications')->where('token',$verification_code)->first();
+
+       if(!is_null($check)){
+           $user = User::find($check->membership_id);
+
+           if($user->is_verified == 1){
+               return response()->json([
+                   'success'=> true,
+                   'message'=> 'Account already verified..'
+               ]);
+           }
+
+           $user->update(['is_verified' => 1]);
+           DB::table('membership_verifications')->where('token',$verification_code)->delete();
+
+           return response()->json([
+               'success'=> true,
+               'message'=> 'You have successfully verified your email address.'
+           ]);
+       }
+
+       return response()->json(['success'=> false, 'error'=> "Verification code is invalid."]);
+
+   }
 
     /****
      * Get a JWT via given credentials.
@@ -71,11 +147,20 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        $credentials['is_verified'] = 1;
+
+        try {
+            // attempt to verify the credentials and create a token for the user
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials. Please make sure you entered the right information and you have verified your email address.'], 404);
+            }
+        } catch (JWTException $e) {
+            // something went wrong whilst attempting to encode the token
+            return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 500);
         }
 
-        return $this->respondWithToken($token);
+        // all good so return the token
+        return response()->json(['success' => true, 'data'=> [ 'token' => $token ]], 200);
     }
 
     /**
@@ -97,7 +182,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['succes' => 'Successfully logged out']);
     }
 
     /**
@@ -123,6 +208,37 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
+    }
+
+
+    /**
+     * API Recover Password
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function recover(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            $error_message = "Your email address was not found.";
+            return response()->json(['success' => false, 'error' => ['email'=> $error_message]], 401);
+        }
+
+        try {
+            Password::sendResetLink($request->only('email'), function (Message $message) {
+                $message->subject('Your Password Reset Link');
+            });
+
+        } catch (\Exception $e) {
+            //Return with error
+            $error_message = $e->getMessage();
+            return response()->json(['success' => false, 'error' => $error_message], 401);
+        }
+
+        return response()->json([
+            'success' => true, 'data'=> ['message'=> 'A reset email has been sent! Please check your email.']
         ]);
     }
 }

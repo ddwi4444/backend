@@ -61,7 +61,7 @@
 
 							<table border="0" cellpadding="0" cellspacing="0" width="100%" class="fullwidth" style="border-bottom:1px solid #e7e7e7">
 							<tbody><tr>
-								<td style="padding:20px 0;text-align:left;font-weight:500;font-size:24px;color:#343333" class="avenir" mc:edit="title"><p style="text-transform: capitalize;">{{ $mailData['firstname'] }}</p></td>
+							<td style="padding:20px 0;text-align:left;font-weight:500;font-size:24px;color:#343333" class="avenir" mc:edit="title"><p style="text-transform: capitalize;">{{ $mailData['firstname'] }}</p></td>
 							  </tr>
 							  <tr>
 								<td style="padding:0 80px 0 0;font-size:18px;line-height:167%;font-weight:400;color:#343333" mc:edit="copy 1">
@@ -72,13 +72,14 @@
 							  <tr>
 								<td style="padding:30px 0 60px 0" mc:edit="button">
 
-									<!--[if mso]><table border="0" cellpadding="0" cellspacing="0" align="left" bgcolor="#343333"><tr><td align="left"><![endif]-->
-									<div align="left">
-										<a data-qa="verification_link" href="{{ route("verifyRegister", ["verification_code" => $mailData['verification_code']]) }}" style="text-decoration:none;color:#FFFFFF;background-color:#34aec9;display:inline-block;padding:18px 32px;margin:auto;border-radius:34px;font-size:px;font-weight:500" class="button">
-																							Verify my email
+								<!--[if mso]><table border="0" cellpadding="0" cellspacing="0" align="left" bgcolor="#343333"><tr><td align="left"><![endif]-->
+								<div align="left">
+										<a data-qa="verification_link" href="{{ url('user/resetPassword', $mailData['id'])}}" style="text-decoration:none;color:#FFFFFF;background-color:#34aec9;display:inline-block;padding:18px 32px;margin:auto;border-radius:34px;font-size:px;font-weight:500" class="button">
+																							Reset my password
 																					</a>
-									</div>
-									<!--[if mso]></td></tr></table><![endif]-->
+								</div>
+								<!--[if mso]></td></tr></table><![endif]-->
+
 
 								</td>
 							</tr>

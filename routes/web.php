@@ -20,7 +20,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('user/verify/{verification_code}', [AuthController::class, 'verifyUser']);
+// Route::get('user/verify/{verification_code}', [AuthController::class, 'verifyUser']);
+// Route::get('resetPassword/{id}}', [AuthController::class, 'resetPassword']);
 
-// Route::get('user/verify/{verification_code}', [AuthController::class, 'ResetPasswordController@showResetForm'])->name('password.request');
-// Route::get('user/verify/{verification_code}', [AuthController::class, 'ResetPasswordController@postReset'])->name('password.request');
+// Route::patch('resetPassword/{id}', [AuthController::class, 'resetPassword'])->name('resetPassword');
+
+// Route::get('user/password/reset/{token}', [AuthController::class, 'showResetForm'])->name('password.request');
+// Route::get('user/password/reset', [AuthController::class, 'postReset'])->name('password.request');

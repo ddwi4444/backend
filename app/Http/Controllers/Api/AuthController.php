@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Str;
 use App\Mail\RegisterMail;
+use App\Mail\RecoverPasswordMail;
 use Ramsey\Uuid\Uuid;
+
 
 
 
@@ -97,10 +99,9 @@ class AuthController extends Controller
     public function sendEmail($email, $verification_code, $firstname){
         $mailData = [
             "title" => "Register Email Verifikasi",
-            "firstname" => "Hi, ".$firstname,
+            "firstname" => "Hello!, ".$firstname,
             "body1" => "Thank you for creating an account with us.",
-            "body2" => "Please click on the link below or copy it into the address bar of your browser to confirm your email address: ",
-            
+            "body2" => "Please click on the link below or copy it into the address bar of your browser to confirm your email address : ",
             "verification_code" => $verification_code
         ];
 
@@ -229,18 +230,73 @@ class AuthController extends Controller
         }
 
         try {
-            Password::sendResetLink($request->only('email'), function (Message $message) {
-                $message->subject('Your Password Reset Link');
-            });
+            $firstname = $user->firstname;
+            $id = $user->id;
+            $email = request('email');
+
+            $this->sendEmailReset($email, $firstname, $id);
+            
+            // Password::sendResetLink($request->only('email'), function (Message $message) {
+            //     $message->subject('Your Password Reset Link');
+            // });
 
         } catch (\Exception $e) {
             //Return with error
             $error_message = $e->getMessage();
-            return response()->json(['success' => false, 'error' => $error_message], 401);
+            return response()->json(['successss' => false, 'error' => $error_message], 401);
         }
 
         return response()->json([
             'success' => true, 'data'=> ['message'=> 'A reset email has been sent! Please check your email.']
         ]);
     }
+
+    // To send email reset
+    public function sendEmailReset($email, $firstname, $id){
+        $mailData = [
+            "id" => $id,
+            "title" => "Reset Password",
+            "firstname" => "Hello!, ".$firstname,
+            "body1" => "You are receiving this email because we are received a password reset request for your account",
+            "body2" => "Please click on the link below or copy it into the address bar of your browser to change your password :",
+        ];
+
+        Mail::to($email)->send(new RecoverPasswordMail($mailData));
+    }
+
+    // Reset Password 
+    public function resetPassword($id, Request $request)
+   {
+
+        //set validation
+        $validator = Validator::make(request()->all(), [
+            'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|min:6'
+
+        ]);
+
+        
+        //if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = User::where('id', $id)->first();
+
+        $user->update([
+            'password'  => Hash::make(request('password')),
+        ]);
+
+        if ($user) {
+            return response()->json([
+                'success'=> true,
+                'message'=> 'You have successfully updated your password.'
+            ]);
+        } else {
+            return response()->json([
+                'success'=> true,
+                'message'=> 'You have unsuccessfully updated your password.'
+            ]);
+        }
+   }
 }

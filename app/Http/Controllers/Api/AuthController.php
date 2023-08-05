@@ -48,6 +48,15 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        $get_data = User::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $id = 'User'.date('ymd').'-'.sprintf('%09d', 1);
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $id = 'User'.date('ymd').'-'.sprintf('%09d', $increment);
+        }
+
         $email = request('email');
         $username = request('username');
         $password = request('password');
@@ -79,7 +88,8 @@ class AuthController extends Controller
         
 
         $user = User::create([
-            'id'       => Uuid::uuid4()->getHex(), // toString();
+            'id'     => $id,
+            'uuid'       => Uuid::uuid4()->getHex(), // toString();
             'email'     => request('email'),
             'username'     => request('username'),
             'password'  => Hash::make(request('password')),
@@ -231,10 +241,10 @@ class AuthController extends Controller
 
         try {
             $firstname = $user->firstname;
-            $id = $user->id;
+            $uuid = $user->uuid;
             $email = request('email');
 
-            $this->sendEmailReset($email, $firstname, $id);
+            $this->sendEmailReset($email, $firstname, $uuid);
             
             // Password::sendResetLink($request->only('email'), function (Message $message) {
             //     $message->subject('Your Password Reset Link');
@@ -252,9 +262,9 @@ class AuthController extends Controller
     }
 
     // To send email reset
-    public function sendEmailReset($email, $firstname, $id){
+    public function sendEmailReset($email, $firstname, $uuid){
         $mailData = [
-            "id" => $id,
+            "uuid" => $uuid,
             "title" => "Reset Password",
             "firstname" => "Hello!, ".$firstname,
             "body1" => "You are receiving this email because we are received a password reset request for your account",
@@ -265,7 +275,7 @@ class AuthController extends Controller
     }
 
     // Reset Password 
-    public function resetPassword($id, Request $request)
+    public function resetPassword($uuid, Request $request)
    {
 
         //set validation
@@ -281,7 +291,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $user = User::where('id', $id)->first();
+        $user = User::where('uuid', $uuid)->first();
 
         $user->update([
             'password'  => Hash::make(request('password')),

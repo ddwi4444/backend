@@ -15,6 +15,7 @@ class User extends Authenticatable implements JWTSubject
 
     protected $table = "memberships";
     public $incrementing = false;
+    protected $primaryKey = 'id';
 
 
     /**
@@ -24,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'id',
+        'uuid',
         'image',
         'email',
         'username',

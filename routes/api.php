@@ -19,7 +19,7 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('recover', [AuthController::class, 'recover'])->name('recover');
 Route::get('verifyRegister/{verification_code}', [AuthController::class, 'verifyUser'])->name('verifyRegister');
-Route::post('resetPassword/{id}', [AuthController::class, 'resetPassword'])->name('resetPassword');
+Route::post('resetPassword/{uuid}', [AuthController::class, 'resetPassword'])->name('resetPassword');
 
 
 

@@ -74,7 +74,7 @@
 
 								<!--[if mso]><table border="0" cellpadding="0" cellspacing="0" align="left" bgcolor="#343333"><tr><td align="left"><![endif]-->
 								<div align="left">
-										<a data-qa="verification_link" href="{{ url('user/resetPassword', $mailData['id'])}}" style="text-decoration:none;color:#FFFFFF;background-color:#34aec9;display:inline-block;padding:18px 32px;margin:auto;border-radius:34px;font-size:px;font-weight:500" class="button">
+										<a data-qa="verification_link" href="{{ url('user/resetPassword', $mailData['uuid'])}}" style="text-decoration:none;color:#FFFFFF;background-color:#34aec9;display:inline-block;padding:18px 32px;margin:auto;border-radius:34px;font-size:px;font-weight:500" class="button">
 																							Reset my password
 																					</a>
 								</div>

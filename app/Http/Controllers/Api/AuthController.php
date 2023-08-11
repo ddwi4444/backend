@@ -98,7 +98,7 @@ class AuthController extends Controller
         ]);
 
         $verification_code = Str::random(30); //Generate verification code
-        DB::table('membership_verifications')->insert(['membership_id'=>$user->id,'token'=>$verification_code]);
+        DB::table('user_verifications')->insert(['user_id'=>$user->id,'token'=>$verification_code]);
 
             $this->sendEmail($email, $verification_code, $firstname);
 
@@ -126,10 +126,10 @@ class AuthController extends Controller
     */
    public function verifyUser($verification_code)
    {
-       $check = DB::table('membership_verifications')->where('token',$verification_code)->first();
+       $check = DB::table('user_verifications')->where('token',$verification_code)->first();
 
        if(!is_null($check)){
-           $user = User::find($check->membership_id);
+           $user = User::find($check->user_id);
 
            if($user->is_verified == 1){
                return response()->json([
@@ -139,7 +139,7 @@ class AuthController extends Controller
            }
 
            $user->update(['is_verified' => 1]);
-           DB::table('membership_verifications')->where('token',$verification_code)->delete();
+           DB::table('user_verifications')->where('token',$verification_code)->delete();
 
            return response()->json([
                'success'=> true,

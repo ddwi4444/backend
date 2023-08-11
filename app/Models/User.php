@@ -13,7 +13,12 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = "memberships";
+    const ROLE_USER = 'user';
+    const ROLE_STUDENT = 'student';
+    const ROLE_ADMIN = 'admin';
+    const ROLE_OSIS = 'osis';
+
+    protected $table = "user";
     public $incrementing = false;
     protected $primaryKey = 'id';
 

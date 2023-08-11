@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('membership_verifications', function (Blueprint $table) {
+        Schema::create('user_verifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('membership_id', 32)->references('id')->on('memberships');
+            $table->string('user_id', 32)->references('id')->on('user');
             $table->string('token');
 
-            $table->foreign('membership_id')->references('id')->on('memberships')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
         });
     }
 
@@ -31,7 +31,7 @@ return new class extends Migration
     {
         Schema::dropIfExists("user_verifications");
 
-        Schema::table('memberships', function (Blueprint $table) {
+        Schema::table('user', function (Blueprint $table) {
             $table->dropColumn('is_verified');
         });    
     }

@@ -253,7 +253,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             //Return with error
             $error_message = $e->getMessage();
-            return response()->json(['successss' => false, 'error' => $error_message], 401);
+            return response()->json(['success' => false, 'error' => $error_message], 401);
         }
 
         return response()->json([

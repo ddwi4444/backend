@@ -60,5 +60,14 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    // Untuk mengecek role
+    public function hasRole($role)
+    {
+    // check param $role dengan field usertype
+    if ($role == $this->usertype) {
+        return true;
+    }return false;
+    }
+
 
 }

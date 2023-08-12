@@ -17,14 +17,17 @@ return new class extends Migration
             $table->string('id', 50)->primary();
             $table->string('uuid', 32)->unique();
             $table->string('email')->unique();
-            $table->string('username')->unique();
+            $table->string('nama_persona')->unique();
             $table->string('password');
-            $table->string('firstname', 100);
-            $table->string('lastname', 100)->nullable();
+            $table->string('nama_OC', 100)->nullable();
+            $table->string('no_tlp', 100)->nullable();
 	        $table->string('image')->nullable();
 	        $table->boolean('is_verified')->default(0);
             $table->tinyInteger('umur')->nullable();
+            $table->tinyInteger('umur_rl')->nullable();
             $table->date('tanggal_lahir')->nullable();
+            $table->date('tanggal_lahir_rl')->nullable();
+            $table->string('ras')->nullable();
             $table->string('zodiak')->nullable();
             $table->tinyInteger('tinggi_badan')->nullable();
             $table->tinyInteger('berat_badan')->nullable();
@@ -34,6 +37,7 @@ return new class extends Migration
             $table->string('did_not_like')->nullable();
             $table->string('quotes')->nullable();
             $table->string('story_character')->nullable();
+            $table->string('eskul')->nullable();
             $table->string('role')->default('user');
             $table->boolean('is_active')->default(1);
             $table->boolean('is_servicer')->default(0);

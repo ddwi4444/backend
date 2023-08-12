@@ -61,7 +61,7 @@
 
 							<table border="0" cellpadding="0" cellspacing="0" width="100%" class="fullwidth" style="border-bottom:1px solid #e7e7e7">
 							<tbody><tr>
-								<td style="padding:20px 0;text-align:left;font-weight:500;font-size:24px;color:#343333" class="avenir" mc:edit="title"><p style="text-transform: capitalize;">{{ $mailData['firstname'] }}</p></td>
+								<td style="padding:20px 0;text-align:left;font-weight:500;font-size:24px;color:#343333" class="avenir" mc:edit="title"><p style="text-transform: capitalize;">{{ $mailData['nama_persona'] }}</p></td>
 							  </tr>
 							  <tr>
 								<td style="padding:0 80px 0 0;font-size:18px;line-height:167%;font-weight:400;color:#343333" mc:edit="copy 1">

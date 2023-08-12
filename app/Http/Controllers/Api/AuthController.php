@@ -36,10 +36,8 @@ class AuthController extends Controller
         //set validation
         $validator = Validator::make(request()->all(), [
             'email'     => 'required|email|unique:users',
-            'username'     => 'required',
+            'nama_persona'     => 'required',
             'password'  => 'required|min:8',
-            'firstname'      => 'required',
-            'lastname'      => 'required',
         ]);
 
         
@@ -58,17 +56,15 @@ class AuthController extends Controller
         }
 
         $email = request('email');
-        $username = request('username');
+        $nama_persona = request('nama_persona');
         $password = request('password');
-        $firstname = request('firstname');
-        $lastname = request('lastname');
 
         //create userMembership
         // $user = User::create([
         //     'email'     => request('email'),
         //     'username'     => request('username'),
         //     'password'  => Hash::make(request('password')),
-        //     'firstname'      => request('firstname'),
+        //     'nama_persona'      => request('nama_persona'),
         //     'lastname'      => request('lastname'),
         // ]);
 
@@ -76,10 +72,10 @@ class AuthController extends Controller
         // DB::table('membership_verifications')->insert(['membership_id'=>$user->id,'token'=>$verification_code]);
 
         $subject = "Please verify your email address.";
-        // Mail::send('email.verify', ['name' => $firstname, 'verification_code' => $verification_code],
-        //     function($mail) use ($email, $firstname, $subject){
+        // Mail::send('email.verify', ['name' => $nama_persona, 'verification_code' => $verification_code],
+        //     function($mail) use ($email, $nama_persona, $subject){
         //         $mail->from(getenv('FROM_EMAIL_ADDRESS'), "From Historical Art Fantasia");
-        //         $mail->to($email, $firstname);
+        //         $mail->to($email, $nama_persona);
         //         $mail->subject($subject);
         //     });
 
@@ -91,25 +87,23 @@ class AuthController extends Controller
             'id'     => $id,
             'uuid'       => Uuid::uuid4()->getHex(), // toString();
             'email'     => request('email'),
-            'username'     => request('username'),
+            'nama_persona'     => request('nama_persona'),
             'password'  => Hash::make(request('password')),
-            'firstname'      => request('firstname'),
-            'lastname'      => request('lastname'),
         ]);
 
         $verification_code = Str::random(30); //Generate verification code
         DB::table('user_verifications')->insert(['user_id'=>$user->id,'token'=>$verification_code]);
 
-            $this->sendEmail($email, $verification_code, $firstname);
+            $this->sendEmail($email, $verification_code, $nama_persona);
 
         return response()->json(['success'=> true, 'message'=> 'Thanks for signing up! Please check your email to complete your registration.']);
     }
 
     // TO send email
-    public function sendEmail($email, $verification_code, $firstname){
+    public function sendEmail($email, $verification_code, $nama_persona){
         $mailData = [
             "title" => "Register Email Verifikasi",
-            "firstname" => "Hello!, ".$firstname,
+            "nama_persona" => "Hello!, ".$nama_persona,
             "body1" => "Thank you for creating an account with us.",
             "body2" => "Please click on the link below or copy it into the address bar of your browser to confirm your email address : ",
             "verification_code" => $verification_code
@@ -240,11 +234,11 @@ class AuthController extends Controller
         }
 
         try {
-            $firstname = $user->firstname;
+            $nama_persona = $user->nama_persona;
             $uuid = $user->uuid;
             $email = request('email');
 
-            $this->sendEmailReset($email, $firstname, $uuid);
+            $this->sendEmailReset($email, $nama_persona, $uuid);
             
             // Password::sendResetLink($request->only('email'), function (Message $message) {
             //     $message->subject('Your Password Reset Link');
@@ -262,11 +256,11 @@ class AuthController extends Controller
     }
 
     // To send email reset
-    public function sendEmailReset($email, $firstname, $uuid){
+    public function sendEmailReset($email, $nama_persona, $uuid){
         $mailData = [
             "uuid" => $uuid,
             "title" => "Reset Password",
-            "firstname" => "Hello!, ".$firstname,
+            "nama_persona" => "Hello!, ".$nama_persona,
             "body1" => "You are receiving this email because we are received a password reset request for your account",
             "body2" => "Please click on the link below or copy it into the address bar of your browser to change your password :",
         ];

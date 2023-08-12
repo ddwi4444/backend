@@ -41,6 +41,23 @@ class KomikController extends Controller
         ], 200);
     }
 
+    // Menampilkan komik pada single page
+    public function read($id){
+        $data = KomikModel::where('id', $id)->first();
+
+        if(!is_null($data)){
+            return response([
+                'message' => 'Komik Succcessfully Showed',
+                'data' => $data,
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Komik Unsucccessfully Showed',
+            'data' => null,
+        ], 404);
+    }
+
     // Untuk mengupdate komik
     public function update(Request $request, $id){
         $data = KomikModel::find($id);

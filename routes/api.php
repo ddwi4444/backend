@@ -43,3 +43,4 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 Route::post('create-komik', [KomikController::class, 'create'])->middleware('role:admin,student,osis');
 Route::post('update-komik/{id}', [KomikController::class, 'update'])->middleware('role:admin,student,osis');
 Route::delete('delete-komik/{id}', [KomikController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('read-komik/{id}', [KomikController::class, 'read']);

@@ -8,8 +8,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use App\Models\KomikModel; // Mengimpor model Model
-use App\Models\NPCModel; // Mengimpor model NPC
 
 
 class User extends Authenticatable implements JWTSubject
@@ -78,5 +76,20 @@ class User extends Authenticatable implements JWTSubject
     public function npcs()
     {
         return $this->hasMany(NPCModel::class);
+    }
+
+    public function merchandises()
+    {
+        return $this->hasMany(MerchandiseModel::class);
+    }
+
+    public function forums()
+    {
+        return $this->hasMany(ForumModel::class);
+    }
+
+    public function portofolios()
+    {
+        return $this->hasMany(PortofolioModel::class);
     }
 }

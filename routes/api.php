@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ForumController;
 use App\Http\Controllers\Api\KomikController;
 use App\Http\Controllers\Api\MerchandiseController;
 use App\Http\Controllers\Api\NPCController;
+use App\Http\Controllers\Api\PortofolioController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -58,3 +60,15 @@ Route::post('create-merchandise', [MerchandiseController::class, 'create'])->mid
 Route::post('update-merchandise/{id}', [MerchandiseController::class, 'update'])->middleware('role:admin');
 Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'])->middleware('role:admin');
 Route::post('read-merchandise/{id}', [MerchandiseController::class, 'read']);
+
+// Portofolio
+Route::post('create-portofolio', [PortofolioController::class, 'create'])->middleware('role:admin,student,osis');
+Route::post('update-portofolio/{id}', [PortofolioController::class, 'update'])->middleware('role:admin,student,osis');
+Route::delete('delete-portofolio/{id}', [PortofolioController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('read-portofolio/{id}', [PortofolioController::class, 'read']);
+
+// Merchandise
+Route::post('create-forum', [ForumController::class, 'create'])->middleware('role:admin,student,osis');
+Route::post('update-forum/{id}', [ForumController::class, 'update'])->middleware('role:admin,student,osis');
+Route::delete('delete-forum/{id}', [ForumController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('read-forum/{id}', [ForumController::class, 'read']);

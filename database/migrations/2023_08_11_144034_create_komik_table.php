@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('komik', function (Blueprint $table) {
             $table->id();
+            $table->string('user_id', 32)->references('id')->on('user');
             $table->string('judul');
             $table->string('genre');
             $table->string('thumbnail');
@@ -29,6 +30,8 @@ return new class extends Migration
             $table->boolean('status')->default(0);
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
         });
     }
 

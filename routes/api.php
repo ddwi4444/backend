@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\KomikController;
+use App\Http\Controllers\Api\NPCController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,3 +45,9 @@ Route::post('create-komik', [KomikController::class, 'create'])->middleware('rol
 Route::post('update-komik/{id}', [KomikController::class, 'update'])->middleware('role:admin,student,osis');
 Route::delete('delete-komik/{id}', [KomikController::class, 'delete'])->middleware('role:admin,student,osis');
 Route::post('read-komik/{id}', [KomikController::class, 'read']);
+
+// NPC
+Route::post('create-npc', [NPCController::class, 'create'])->middleware('role:admin,student,osis');
+Route::post('update-npc/{id}', [NPCController::class, 'update'])->middleware('role:admin,student,osis');
+Route::delete('delete-npc/{id}', [NPCController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('read-npc/{id}', [NPCController::class, 'read']);

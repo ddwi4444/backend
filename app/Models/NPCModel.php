@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User; // Mengimpor model User
 
 
-class KomikModel extends Model
+class NPCModel extends Model
 {
     use HasFactory;
 
-    protected $table = "komik";
+    protected $table = "npc";
     public $incrementing = false;
     protected $primaryKey = 'id';
 
@@ -22,18 +22,10 @@ class KomikModel extends Model
      */
     protected $fillable = [
         'user_id',
-        'judul',
-        'genre',
-        'thumbnail',
-        'content',
-        'chapter',
-        'volume',
-        'post_by',
-        'jumlah_view',
-        'jumlah_like',
+        'my_profile',
         'nama_author',
-        'instagram_author',
-        'status'
+        'story',
+        'image_npc',
     ];
 
     public static function filters(){

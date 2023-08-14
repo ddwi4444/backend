@@ -11,7 +11,7 @@ use Validator;
 class KomikController extends Controller
 {
     // Untuk membuat komik
-    public function create (Request $request)
+    public function create(Request $request)
     {
         $storeData = $request->all();
 
@@ -29,10 +29,12 @@ class KomikController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $nama_author = auth()->user()->username;
+        $nama_author = auth()->user()->nama_persona;
+        $user_id = auth()->user()->id;
 
         $dataKomik = collect($request)->only(KomikModel::filters())->all();
         $dataKomik['post_by'] = $nama_author;
+        $dataKomik['user_id'] = $user_id;
         $komik = KomikModel::create($dataKomik);
 
         return response([
@@ -42,7 +44,8 @@ class KomikController extends Controller
     }
 
     // Menampilkan komik pada single page
-    public function read($id){
+    public function read($id)
+    {
         $data = KomikModel::where('id', $id)->first();
 
         if(!is_null($data)){
@@ -59,7 +62,8 @@ class KomikController extends Controller
     }
 
     // Untuk mengupdate komik
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $data = KomikModel::find($id);
 
         if(is_null($data)){
@@ -88,7 +92,8 @@ class KomikController extends Controller
     }
 
     // Menghapus Komik
-    public function delete($id){
+    public function delete($id)
+    {
         $data = KomikModel::where('id', $id)->first();
 
         if(is_null($data)){

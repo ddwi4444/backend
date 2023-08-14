@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id', 32)->references('id')->on('user');
             $table->integer('parent_id')->nullable();
-            $table->string('isi');
+            $table->text('isi');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('forum_models');
+        Schema::dropIfExists('forum');
     }
 };

@@ -12,8 +12,6 @@ class NPCModel extends Model
     use HasFactory;
 
     protected $table = "npc";
-    public $incrementing = false;
-    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.

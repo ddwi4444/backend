@@ -19,6 +19,8 @@ class MerchandiseModel extends Model
         'stok',
     ];
 
+    protected $table = "merchandise";
+
     public static function filters(){
         $instance = new static();
         return $instance->getConnection()->getSchemaBuilder()->getColumnListing($instance->getTable());

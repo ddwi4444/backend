@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('merchandise_models', function (Blueprint $table) {
+        Schema::create('merchandise', function (Blueprint $table) {
             $table->id();
             $table->string('user_id', 32)->references('id')->on('user');
             $table->string('nama');

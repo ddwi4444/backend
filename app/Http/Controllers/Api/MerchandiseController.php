@@ -31,7 +31,7 @@ class MerchandiseController extends Controller
 
         $dataMerchandise = collect($request)->only(MerchandiseModel::filters())->all();
 
-        $image_name = \Str::random(5).$request->jenis_kendaraan_id.str_replace(' ', '', $dataMerchandise['nama']).\Str::random(5);
+        $image_name = \Str::random(5).str_replace(' ', '', $dataMerchandise['nama']).\Str::random(5);
         $file = $dataMerchandise['thumbnail'];
         $extension = $file->getClientOriginalExtension();
 

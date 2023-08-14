@@ -12,7 +12,6 @@ class KomikModel extends Model
     use HasFactory;
 
     protected $table = "komik";
-    public $incrementing = false;
     protected $primaryKey = 'id';
 
     /**

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\KomikController;
+use App\Http\Controllers\Api\MerchandiseController;
 use App\Http\Controllers\Api\NPCController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -51,3 +52,9 @@ Route::post('create-npc', [NPCController::class, 'create'])->middleware('role:ad
 Route::post('update-npc/{id}', [NPCController::class, 'update'])->middleware('role:admin,student,osis');
 Route::delete('delete-npc/{id}', [NPCController::class, 'delete'])->middleware('role:admin,student,osis');
 Route::post('read-npc/{id}', [NPCController::class, 'read']);
+
+// Merchandise
+Route::post('create-merchandise', [MerchandiseController::class, 'create'])->middleware('role:admin');
+Route::post('update-merchandise/{id}', [MerchandiseController::class, 'update'])->middleware('role:admin');
+Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'])->middleware('role:admin');
+Route::post('read-merchandise/{id}', [MerchandiseController::class, 'read']);

@@ -49,43 +49,21 @@ class AuthController extends Controller
         $get_data = User::orderBy('created_at','DESC')->first();
         if(is_null($get_data)) {
             $id = 'User'.date('ymd').'-'.sprintf('%09d', 1);
+            $uuid = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', 1); // toString();
         } else {
             $find = substr($get_data->id, -9);
             $increment = $find + 1;
             $id = 'User'.date('ymd').'-'.sprintf('%09d', $increment);
+            $uuid = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
         }
 
         $email = request('email');
         $nama_persona = request('nama_persona');
-        $password = request('password');
-
-        //create userMembership
-        // $user = User::create([
-        //     'email'     => request('email'),
-        //     'username'     => request('username'),
-        //     'password'  => Hash::make(request('password')),
-        //     'nama_persona'      => request('nama_persona'),
-        //     'lastname'      => request('lastname'),
-        // ]);
-
-        // $verification_code = Str::random(30); //Generate verification code
-        // DB::table('membership_verifications')->insert(['membership_id'=>$user->id,'token'=>$verification_code]);
-
-        $subject = "Please verify your email address.";
-        // Mail::send('email.verify', ['name' => $nama_persona, 'verification_code' => $verification_code],
-        //     function($mail) use ($email, $nama_persona, $subject){
-        //         $mail->from(getenv('FROM_EMAIL_ADDRESS'), "From Historical Art Fantasia");
-        //         $mail->to($email, $nama_persona);
-        //         $mail->subject($subject);
-        //     });
-
-        // $token = \Str::random(25);
-
         
 
         $user = User::create([
+            'uuid' => $uuid,
             'id'     => $id,
-            'uuid'       => Uuid::uuid4()->getHex(), // toString();
             'email'     => request('email'),
             'nama_persona'     => request('nama_persona'),
             'password'  => Hash::make(request('password')),

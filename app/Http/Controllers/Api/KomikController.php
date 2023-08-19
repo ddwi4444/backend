@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\KomikModel;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class KomikController extends Controller
@@ -18,7 +19,7 @@ class KomikController extends Controller
         $validator = Validator::make($storeData, [
             'judul' => 'required',
             'genre' => 'required',
-            'thumbnail' => 'required',
+            'thumbnail' => 'required|mimes:jpg,bmp,png',
             'instagram_author' => 'required',
             'content' => 'required',
             'nama_author' => 'required',
@@ -33,6 +34,18 @@ class KomikController extends Controller
         $user_id = auth()->user()->id;
 
         $dataKomik = collect($request)->only(KomikModel::filters())->all();
+
+        $image_name = \Str::random(15);
+        $file = $dataKomik['thumbnail'];
+        $extension = $file->getClientOriginalExtension();
+
+        $uploadDoc = $request->thumbnail->storeAs(
+            'komik_thumbnail',
+            $image_name . '.' . $extension,
+            ['disk' => 'public']
+        );
+
+        $dataKomik['thumbnail'] = $uploadDoc;
         $dataKomik['post_by'] = $nama_author;
         $dataKomik['user_id'] = $user_id;
         $komik = KomikModel::create($dataKomik);
@@ -48,7 +61,7 @@ class KomikController extends Controller
     {
         $data = KomikModel::where('id', $id)->first();
 
-        if(!is_null($data)){
+        if (!is_null($data)) {
             return response([
                 'message' => 'Komik Succcessfully Showed',
                 'data' => $data,
@@ -66,15 +79,15 @@ class KomikController extends Controller
     {
         $data = KomikModel::find($id);
 
-        if(is_null($data)){
-            return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
+        if (is_null($data)) {
+            return response()->json(['Failure' => true, 'message' => 'Data not found']);
         }
 
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
             'judul' => 'required',
             'genre' => 'required',
-            'thumbnail' => 'required',
+            'thumbnail' => 'required|mimes:jpg,bmp,png',
             'instagram_author' => 'required',
             'content' => 'required',
             'nama_author' => 'required',
@@ -86,9 +99,27 @@ class KomikController extends Controller
         }
 
         $dataKomik = collect($request)->only(KomikModel::filters())->all();
+
+        if (isset($request->thumbnail)) {
+            if (!empty($data->thumbnail)) {
+                Storage::delete("public/" . $data->thumbnail);
+            }
+            $image_name = \Str::random(15);
+            $file = $dataKomik['thumbnail'];
+            $extension = $file->getClientOriginalExtension();
+
+            $uploadDoc = $request->thumbnail->storeAs(
+                'komik_thumbnail',
+                $image_name . '.' . $extension,
+                ['disk' => 'public']
+            );
+
+            $dataKomik['thumbnail'] = $uploadDoc;
+        }
+
         $data->update($dataKomik);
 
-        return response()->json(['Success'=> true, 'message'=> 'Komik Successfully Changed']);
+        return response()->json(['Success' => true, 'message' => 'Komik Successfully Changed']);
     }
 
     // Menghapus Komik
@@ -96,13 +127,12 @@ class KomikController extends Controller
     {
         $data = KomikModel::where('id', $id)->first();
 
-        if(is_null($data)){
-            return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
+        if (is_null($data)) {
+            return response()->json(['Failure' => true, 'message' => 'Data not found']);
         }
 
         $data->delete();
 
-        return response()->json(['Success'=> true, 'message'=> 'Komik Successfully Deleted']);
+        return response()->json(['Success' => true, 'message' => 'Komik Successfully Deleted']);
     }
-
 }

@@ -7,8 +7,7 @@ use App\Http\Controllers\Api\MerchandiseController;
 use App\Http\Controllers\Api\NPCController;
 use App\Http\Controllers\Api\PortofolioController;
 use App\Http\Controllers\Api\StudentController;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\SubKomikController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,6 +50,13 @@ Route::post('create-komik', [KomikController::class, 'create'])->middleware('rol
 Route::post('update-komik/{id}', [KomikController::class, 'update'])->middleware('role:admin,student,osis');
 Route::delete('delete-komik/{id}', [KomikController::class, 'delete'])->middleware('role:admin,student,osis');
 Route::post('read-komik/{id}', [KomikController::class, 'read']);
+
+// SubKomik
+Route::post('create-subkomik/{id}', [SubKomikController::class, 'create'])->middleware('role:admin');
+Route::post('update-subkomik/{id}', [SubKomikController::class, 'update'])->middleware('role:admin,student,osis');
+Route::delete('delete-subkomik/{id}', [SubKomikController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('read-subkomik/{id}', [SubKomikController::class, 'read']);
+
 
 // NPC
 Route::post('create-npc', [NPCController::class, 'create'])->middleware('role:admin,student,osis');

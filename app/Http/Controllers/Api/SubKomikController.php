@@ -5,23 +5,23 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\KomikModel;
+use App\Models\SubKomikModel;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 
-class KomikController extends Controller
+class SubKomikController extends Controller
 {
     // Untuk membuat komik
-    public function create(Request $request)
+    public function create(Request $request, $id)
     {
         $storeData = $request->all();
 
         $validator = Validator::make($storeData, [
             'judul' => 'required',
-            'genre' => 'required',
             'thumbnail' => 'required|mimes:jpg,bmp,png',
-            'volume' => 'required',
-            'nama_author' => 'required',
+            'content' => 'required',
+            'chapter' => 'required',
+            'instagram_author' => 'required',
         ]);
 
         //if validation fails
@@ -31,23 +31,39 @@ class KomikController extends Controller
 
         $nama_author = auth()->user()->nama_persona;
         $user_id = auth()->user()->id;
+        $komik_id = $id;
 
-        $dataKomik = collect($request)->only(KomikModel::filters())->all();
+        $dataKomik = collect($request)->only(SubKomikModel::filters())->all();
 
+        // Image Thumbnail
         $image_name = \Str::random(15);
         $file = $dataKomik['thumbnail'];
         $extension = $file->getClientOriginalExtension();
 
         $uploadDoc = $request->thumbnail->storeAs(
-            'komik_thumbnail',
+            'subkomik_thumbnail',
             $image_name . '.' . $extension,
             ['disk' => 'public']
         );
 
+        // Image Konten
+        $image_name_content = \Str::random(15);
+        $file_content = $dataKomik['content'];
+        $extension = $file_content->getClientOriginalExtension();
+
+        $uploadDocContent = $request->content->storeAs(
+            'subkomik_content',
+            $image_name_content . '.' . $extension,
+            ['disk' => 'public']
+        );
+
+        $dataKomik['content'] = $uploadDocContent;
         $dataKomik['thumbnail'] = $uploadDoc;
         $dataKomik['post_by'] = $nama_author;
+        $dataKomik['nama_author'] = $nama_author;
         $dataKomik['user_id'] = $user_id;
-        $komik = KomikModel::create($dataKomik);
+        $dataKomik['komik_id'] = $komik_id;
+        $komik = SubKomikModel::create($dataKomik);
 
         return response([
             'message' => 'Komik Successfully Added',
@@ -58,7 +74,7 @@ class KomikController extends Controller
     // Menampilkan komik pada single page
     public function read($id)
     {
-        $data = KomikModel::where('id', $id)->first();
+        $data = SubKomikModel::where('id', $id)->first();
 
         if (!is_null($data)) {
             return response([
@@ -76,7 +92,7 @@ class KomikController extends Controller
     // Untuk mengupdate komik
     public function update(Request $request, $id)
     {
-        $data = KomikModel::find($id);
+        $data = SubKomikModel::find($id);
 
         if (is_null($data)) {
             return response()->json(['Failure' => true, 'message' => 'Data not found']);
@@ -87,7 +103,8 @@ class KomikController extends Controller
             'judul' => 'required',
             'genre' => 'required',
             'thumbnail' => 'required|mimes:jpg,bmp,png',
-            'volume' => 'required',
+            'instagram_author' => 'required',
+            'content' => 'required',
             'nama_author' => 'required',
         ]);
 
@@ -96,23 +113,41 @@ class KomikController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $dataKomik = collect($request)->only(KomikModel::filters())->all();
+        $dataKomik = collect($request)->only(SubKomikModel::filters())->all();
 
         if (isset($request->thumbnail)) {
             if (!empty($data->thumbnail)) {
                 Storage::delete("public/" . $data->thumbnail);
             }
+            // Image Thumbnail
             $image_name = \Str::random(15);
             $file = $dataKomik['thumbnail'];
             $extension = $file->getClientOriginalExtension();
 
             $uploadDoc = $request->thumbnail->storeAs(
-                'komik_thumbnail',
+                'subkomik_thumbnail',
                 $image_name . '.' . $extension,
                 ['disk' => 'public']
             );
 
             $dataKomik['thumbnail'] = $uploadDoc;
+        }
+
+        if (isset($request->content)) {
+            if (!empty($data->content)) {
+                Storage::delete("public/" . $data->content);
+            }
+            // Image Content
+            $image_name_content = \Str::random(15);
+            $file_content = $dataKomik['content'];
+            $extension = $file_content->getClientOriginalExtension();
+
+            $uploadDocContent = $request->content->storeAs(
+                'subkomik_content',
+                $image_name_content . '.' . $extension,
+                ['disk' => 'public']
+            );
+            $dataKomik['content'] = $uploadDocContent;
         }
 
         $data->update($dataKomik);
@@ -123,7 +158,7 @@ class KomikController extends Controller
     // Menghapus Komik
     public function delete($id)
     {
-        $data = KomikModel::where('id', $id)->first();
+        $data = SubKomikModel::where('id', $id)->first();
 
         if (is_null($data)) {
             return response()->json(['Failure' => true, 'message' => 'Data not found']);

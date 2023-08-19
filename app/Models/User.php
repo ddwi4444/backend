@@ -57,7 +57,7 @@ class User extends Authenticatable implements JWTSubject
         'role',
         'is_active',
         'is_servicer',
-        'deskripsi_servicer',        
+        'deskripsi_servicer',
     ];
 
     /**
@@ -82,15 +82,18 @@ class User extends Authenticatable implements JWTSubject
 
     // Untuk mengecek role
     public function hasRole($role)
-    {
-    // check param $role dengan field usertype
-    if ($role == $this->usertype) {
-        return true;
-    }return false;
-    }
+   {
+      // check param $role dengan field usertype
+      if ($role == $this->usertype) {
+         return true;
+      }
+      return false;
+   }
+
 
     //Agar mudah untuk insert ke database
-    public static function filters(){
+    public static function filters()
+    {
         $instance = new static();
         return $instance->getConnection()->getSchemaBuilder()->getColumnListing($instance->getTable());
     }

@@ -4,14 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User; // Mengimpor model User
 
-
-class KomikModel extends Model
+class SubKomikModel extends Model
 {
     use HasFactory;
 
-    protected $table = "komik";
+    protected $table = "sub_komik";
     protected $primaryKey = 'id';
 
     /**
@@ -20,13 +18,17 @@ class KomikModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'komik_id',
         'user_id',
         'judul',
-        'genre',
         'thumbnail',
+        'content',
+        'chapter',
+        'post_by',
+        'jumlah_view',
         'jumlah_like',
-        'volume',
         'nama_author',
+        'instagram_author',
         'status'
     ];
 
@@ -40,8 +42,8 @@ class KomikModel extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function subkomiks()
+    public function komik()
     {
-        return $this->hasMany(SubKomikModel::class);
+        return $this->belongsTo(KomikModel::class);
     }
 }

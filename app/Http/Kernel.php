@@ -66,7 +66,10 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'student' => \App\Http\Middleware\StudentMiddleware::class,
         'osis' => \App\Http\Middleware\OsisMiddleware::class,
-        'role' => \App\Http\Middleware\CheckRoleMiddleware::class,
+        'allRole' => \App\Http\Middleware\CheckRoleMiddleware::class,
+        'StudentOsis' => \App\Http\Middleware\StudentOsisMiddleware::class,
+        'OsisAdmin' => \App\Http\Middleware\OsisAdminMiddleware::class,
+        'StudentOsisAdmin' => \App\Http\Middleware\StudentOsisAdminMiddleware::class,
         'jwt.auth' => 'Tymon\JWTAuth\Middleware\GetUserFromToken',
         'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
     ];

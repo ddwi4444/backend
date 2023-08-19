@@ -43,25 +43,25 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 // });
 
 // User
-Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middleware('role:admin,student,osis');
+Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middleware('StudentOsisAdmin');
 
 // Komik
-Route::post('create-komik', [KomikController::class, 'create'])->middleware('role:admin,student,osis');
-Route::post('update-komik/{id}', [KomikController::class, 'update'])->middleware('role:admin,student,osis');
-Route::delete('delete-komik/{id}', [KomikController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('create-komik', [KomikController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('update-komik/{id}', [KomikController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-komik/{id}', [KomikController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-komik/{id}', [KomikController::class, 'read']);
 
 // SubKomik
-Route::post('create-subkomik/{id}', [SubKomikController::class, 'create'])->middleware('role:admin');
-Route::post('update-subkomik/{id}', [SubKomikController::class, 'update'])->middleware('role:admin,student,osis');
-Route::delete('delete-subkomik/{id}', [SubKomikController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('create-subkomik/{id}', [SubKomikController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('update-subkomik/{id}', [SubKomikController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-subkomik/{id}', [SubKomikController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-subkomik/{id}', [SubKomikController::class, 'read']);
 
 
 // NPC
-Route::post('create-npc', [NPCController::class, 'create'])->middleware('role:admin,student,osis');
-Route::post('update-npc/{id}', [NPCController::class, 'update'])->middleware('role:admin,student,osis');
-Route::delete('delete-npc/{id}', [NPCController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('create-npc', [NPCController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('update-npc/{id}', [NPCController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-npc/{id}', [NPCController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-npc/{id}', [NPCController::class, 'read']);
 
 // Merchandise
@@ -71,13 +71,13 @@ Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'
 Route::post('read-merchandise/{id}', [MerchandiseController::class, 'read']);
 
 // Portofolio
-Route::post('create-portofolio', [PortofolioController::class, 'create'])->middleware('role:admin,student,osis');
-Route::post('update-portofolio/{id}', [PortofolioController::class, 'update'])->middleware('role:admin,student,osis');
-Route::delete('delete-portofolio/{id}', [PortofolioController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('create-portofolio', [PortofolioController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('update-portofolio/{id}', [PortofolioController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-portofolio/{id}', [PortofolioController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-portofolio/{id}', [PortofolioController::class, 'read']);
 
 // Merchandise
-Route::post('create-forum', [ForumController::class, 'create'])->middleware('role:admin,student,osis');
-Route::post('update-forum/{id}', [ForumController::class, 'update'])->middleware('role:admin,student,osis');
-Route::delete('delete-forum/{id}', [ForumController::class, 'delete'])->middleware('role:admin,student,osis');
+Route::post('create-forum', [ForumController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('update-forum/{id}', [ForumController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-forum/{id}', [ForumController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-forum/{id}', [ForumController::class, 'read']);

@@ -23,14 +23,14 @@ return new class extends Migration
             $table->string('no_tlp', 100)->nullable();
 	        $table->string('image')->nullable();
 	        $table->boolean('is_verified')->default(0);
-            $table->tinyInteger('umur')->nullable();
-            $table->tinyInteger('umur_rl')->nullable();
+            $table->integer('umur')->nullable();
+            $table->integer('umur_rl')->nullable();
             $table->date('tanggal_lahir')->nullable();
             $table->date('tanggal_lahir_rl')->nullable();
             $table->string('ras')->nullable();
             $table->string('zodiak')->nullable();
-            $table->tinyInteger('tinggi_badan')->nullable();
-            $table->tinyInteger('berat_badan')->nullable();
+            $table->integer('tinggi_badan')->nullable();
+            $table->integer('berat_badan')->nullable();
             $table->string('MBTI')->nullable();
 	        $table->string('hobi')->nullable();
             $table->string('like')->nullable();

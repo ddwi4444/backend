@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\KomikController;
 use App\Http\Controllers\Api\MerchandiseController;
 use App\Http\Controllers\Api\NPCController;
 use App\Http\Controllers\Api\PortofolioController;
+use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 //     });
 // });
 
+// User
+Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middleware('role:admin,student,osis');
 
 // Komik
 Route::post('create-komik', [KomikController::class, 'create'])->middleware('role:admin,student,osis');

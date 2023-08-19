@@ -32,11 +32,32 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'id',
         'uuid',
-        'image',
         'email',
         'nama_persona',
         'password',
-        'is_verified'
+        'is_verified',
+        'image',
+        'nama_OC',
+        'no_tlp',
+        'umur',
+        'tanggal_lahir',
+        'umur_rl',
+        'tanggal_lahir_rl',
+        'zodiak',
+        'ras',
+        'tinggi_badan',
+        'berat_badan',
+        'MBTI',
+        'hobi',
+        'like',
+        'did_not_like',
+        'quotes',
+        'story_character',
+        'eskul',
+        'role',
+        'is_active',
+        'is_servicer',
+        'deskripsi_servicer',        
     ];
 
     /**
@@ -66,6 +87,12 @@ class User extends Authenticatable implements JWTSubject
     if ($role == $this->usertype) {
         return true;
     }return false;
+    }
+
+    //Agar mudah untuk insert ke database
+    public static function filters(){
+        $instance = new static();
+        return $instance->getConnection()->getSchemaBuilder()->getColumnListing($instance->getTable());
     }
 
     public function komiks()

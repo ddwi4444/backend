@@ -13,20 +13,25 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('komik', function (Blueprint $table) {
+        Schema::create('sub_komik', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBiginteger('komik_id')->references('id')->on('komik');
             $table->string('user_id', 32)->references('id')->on('user');
             $table->string('judul');
-            $table->string('genre');
             $table->string('thumbnail');
-            $table->unsignedBiginteger('jumlah_like')->nullable();
-            $table->integer('volume');
-            $table->string('nama_author');
+            $table->string('content');
+            $table->integer('chapter')->nullable();
+            $table->unsignedBiginteger('jumlah_view')->nullable();
+	        $table->unsignedBiginteger('jumlah_like')->nullable();
+            $table->string('nama_author')->nullable();
+            $table->string('post_by');
+            $table->string('instagram_author');
             $table->boolean('status')->default(0);
             $table->softDeletes();
-            $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign('komik_id')->references('id')->on('komik')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -37,6 +42,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('komik');
+        Schema::dropIfExists('sub_komik');
     }
 };

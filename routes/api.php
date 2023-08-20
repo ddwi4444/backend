@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForumController;
+use App\Http\Controllers\Api\KomenController;
 use App\Http\Controllers\Api\KomikController;
 use App\Http\Controllers\Api\MerchandiseController;
 use App\Http\Controllers\Api\NPCController;
@@ -78,6 +79,13 @@ Route::post('read-portofolio/{id}', [PortofolioController::class, 'read']);
 
 // Merchandise
 Route::post('create-forum', [ForumController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('update-forum/{id}', [ForumController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-forum/{id}', [ForumController::class, 'delete'])->middleware('StudentOsisAdmin');
+Route::post('read-forum/{id}', [ForumController::class, 'read']);
+
+// Komen
+Route::post('create-komen/{idKomik}', [KomenController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('create-subKomen/{idKomen}/{idKomik}', [KomenController::class, 'createKomenBalasan'])->middleware('StudentOsisAdmin');
 Route::post('update-forum/{id}', [ForumController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-forum/{id}', [ForumController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-forum/{id}', [ForumController::class, 'read']);

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id', 50)->references('id')->on('user');
             $table->unsignedBiginteger('sub_komik_id')->references('id')->on('sub_komik');
-            $table->unsignedBiginteger('komen_parent_id')->references('id')->on('komen');
+            $table->unsignedBiginteger('komen_parent_id')->references('id')->on('komen')->nullable();
             $table->string('isi');
             $table->string('komen_by');
             $table->boolean('status')->default(1);

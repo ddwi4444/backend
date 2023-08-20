@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SubKomikModel extends Model
+class KomenModel extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "sub_komik";
+    protected $table = "komen";
     protected $primaryKey = 'id';
 
     /**
@@ -19,17 +19,13 @@ class SubKomikModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'komik_id',
         'user_id',
-        'judul',
-        'thumbnail',
-        'content',
-        'chapter',
-        'post_by',
-        'jumlah_view',
-        'jumlah_like',
-        'nama_author',
-        'instagram_author',
+        'sub_komik_id',
+        'komen_parent_id',
+        'isi',
+        'komen_by',
+        'status',
+        'is_reported',
         'status'
     ];
 
@@ -43,13 +39,8 @@ class SubKomikModel extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function komik()
+    public function komen()
     {
-        return $this->belongsTo(KomikModel::class);
-    }
-
-    public function komens()
-    {
-        return $this->hasMany(KomenModel::class);
+        return $this->belongsTo(KomenModel::class);
     }
 }

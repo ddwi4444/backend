@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\KomikModel;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\SubKomikModel;
@@ -14,6 +15,12 @@ class SubKomikController extends Controller
     // Untuk membuat komik
     public function create(Request $request, $id)
     {
+        $dataKomik = KomikModel::where('id', $id)->first();
+
+        if(is_null($dataKomik)){
+            return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
+        }
+
         $storeData = $request->all();
 
         $validator = Validator::make($storeData, [

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('npc', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 32)->references('id')->on('user');
+            $table->string('user_id', 50)->references('id')->on('user');
             $table->string('my_profile');
             $table->string('nama_author'); //menggunakan nama persona
             $table->string('story');

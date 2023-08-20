@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('merchandise', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id', 32)->references('id')->on('user');
+            $table->string('user_id', 50)->references('id')->on('user');
             $table->string('nama');
             $table->string('deskripsi');
             $table->string('thumbnail');

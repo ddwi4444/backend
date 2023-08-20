@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('sub_komik', function (Blueprint $table) {
             $table->id();
             $table->unsignedBiginteger('komik_id')->references('id')->on('komik');
-            $table->string('user_id', 32)->references('id')->on('user');
+            $table->string('user_id', 50)->references('id')->on('user');
             $table->string('judul');
             $table->string('thumbnail');
             $table->string('content');

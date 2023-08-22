@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('stok');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
         });
     }
 

@@ -3,18 +3,27 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ForumModel;
+use App\Models\ReviewLayananModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ForumController extends Controller
+class ReviewLayananController extends Controller
 {
-    public function create(Request $request)
+    public function create(Request $request, $idStudent)
     {
+
+        $dataStudent = User::where('id', $idStudent)->first();
+
+        if(is_null($dataStudent)){
+            return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
+        }
+        
         $storeData = $request->all();
 
         $validator = Validator::make($storeData, [
             'isi' => 'required',
+            'rating' => 'required',
         ]);
 
         //if validation fails
@@ -25,12 +34,13 @@ class ForumController extends Controller
         $user_id = auth()->user()->id;
         $post_by = auth()->user()->nama_persona;
 
-        $dataAnnouncement = collect($request)->only(ForumModel::filters())->all();
+        $dataReviewLayanan = collect($request)->only(ReviewLayananModel::filters())->all();
 
-        $dataAnnouncement['user_id'] = $user_id;
-        $dataAnnouncement['post_by'] = $post_by;
+        $dataReviewLayanan['user_id_reviewer'] = $user_id;
+        $dataReviewLayanan['user_id_student'] = $idStudent;
+        $dataReviewLayanan['post_by'] = $post_by;
 
-        $forum = ForumModel::create($dataAnnouncement);
+        $forum = ReviewLayananModel::create($dataReviewLayanan);
 
         return response([
             'message' => 'Forum Successfully Added',
@@ -40,7 +50,7 @@ class ForumController extends Controller
 
     public function read($id)
     {
-        $data = ForumModel::where('id', $id)->first();
+        $data = ReviewLayananModel::where('id', $id)->first();
 
         if(!is_null($data)){
             return response([
@@ -56,7 +66,7 @@ class ForumController extends Controller
     }
 
     public function update(Request $request, $id){
-        $data = ForumModel::find($id);
+        $data = ReviewLayananModel::find($id);
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -72,15 +82,15 @@ class ForumController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $dataAnnouncement = collect($request)->only(ForumModel::filters())->all();
-        $data->update($dataAnnouncement);
+        $dataReviewLayanan = collect($request)->only(ReviewLayananModel::filters())->all();
+        $data->update($dataReviewLayanan);
 
         return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Changed']);
     }
 
     public function delete($id)
     {
-        $data = ForumModel::where('id', $id)->first();
+        $data = ReviewLayananModel::where('id', $id)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

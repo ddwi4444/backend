@@ -17,11 +17,7 @@ class OsisAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->role == User::ROLE_USER) {
-            return $next($request);
-        } else if ($request->user()->role == User::ROLE_STUDENT) {
-            return $next($request);
-        } else if ($request->user()->role == User::ROLE_OSIS) {
+        if ($request->user()->role == User::ROLE_OSIS) {
             return $next($request);
         } else if ($request->user()->role == User::ROLE_ADMIN) {
             return $next($request);

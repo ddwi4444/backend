@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('forum', function (Blueprint $table) {
+        Schema::create('announcement', function (Blueprint $table) {
             $table->id();
             $table->string('user_id', 50)->references('id')->on('user');
             $table->string('post_by');
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('forum');
+        Schema::dropIfExists('announcement');
     }
 };

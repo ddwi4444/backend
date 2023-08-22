@@ -16,7 +16,7 @@ class CheckRoleMiddleware
    * @paramstring  $role
    * @return mixed
    */
-  public function handle($request, Closure $next, $role)
+  public function handle($request, Closure $next)
   {
     if ($request->user()->role == User::ROLE_USER) {
       return $next($request);

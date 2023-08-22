@@ -128,4 +128,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(KomenModel::class);
     }
+
+    public function announcements()
+    {
+        return $this->hasMany(AnnouncementModel::class);
+    }
+
+    public function reviewlayanans()
+    {
+        return $this->hasMany(ReviewLayananModell::class);
+    }
 }

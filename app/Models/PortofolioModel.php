@@ -10,13 +10,14 @@ class PortofolioModel extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = "portofolio";
+
+
     protected $fillable = [
         'user_id',
         'thumbnail',
         'link',
     ];
-
-    protected $table = "portofolio";
 
     public static function filters(){
         $instance = new static();

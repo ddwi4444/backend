@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class MerchandiseModel extends Model
 {
     use HasFactory, SoftDeletes;
+ 
+    protected $table = "merchandise";
 
     protected $fillable = [
         'user_id',
@@ -18,8 +20,6 @@ class MerchandiseModel extends Model
         'harga',
         'stok',
     ];
-
-    protected $table = "merchandise";
 
     public static function filters(){
         $instance = new static();

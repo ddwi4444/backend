@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnnouncementController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ForumController;
 use App\Http\Controllers\Api\KomenController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Api\KomikController;
 use App\Http\Controllers\Api\MerchandiseController;
 use App\Http\Controllers\Api\NPCController;
 use App\Http\Controllers\Api\PortofolioController;
+use App\Http\Controllers\Api\ReviewLayananController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\SubKomikController;
 use Illuminate\Support\Facades\Route;
@@ -77,15 +79,27 @@ Route::post('update-portofolio/{id}', [PortofolioController::class, 'update'])->
 Route::delete('delete-portofolio/{id}', [PortofolioController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-portofolio/{id}', [PortofolioController::class, 'read']);
 
-// Merchandise
+// Forum
 Route::post('create-forum', [ForumController::class, 'create'])->middleware('StudentOsisAdmin');
 Route::post('update-forum/{id}', [ForumController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-forum/{id}', [ForumController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-forum/{id}', [ForumController::class, 'read']);
 
+// Anncounmenet
+Route::post('create-announcement', [AnnouncementController::class, 'create'])->middleware('OsisAdmin');
+Route::post('update-announcement/{id}', [AnnouncementController::class, 'update'])->middleware('OsisAdmin');
+Route::delete('delete-announcement/{id}', [AnnouncementController::class, 'delete'])->middleware('OsisAdmin');
+Route::post('read-announcement/{id}', [AnnouncementController::class, 'read']);
+
 // Komen
 Route::post('create-komen/{idKomik}', [KomenController::class, 'create'])->middleware('StudentOsisAdmin');
 Route::post('create-subKomen/{idKomen}/{idKomik}', [KomenController::class, 'createKomenBalasan'])->middleware('StudentOsisAdmin');
-Route::post('update-forum/{id}', [ForumController::class, 'update'])->middleware('StudentOsisAdmin');
-Route::delete('delete-forum/{id}', [ForumController::class, 'delete'])->middleware('StudentOsisAdmin');
-Route::post('read-forum/{id}', [ForumController::class, 'read']);
+Route::post('update-forum/{id}', [KomenController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-forum/{id}', [KomenController::class, 'delete'])->middleware('StudentOsisAdmin');
+Route::post('read-forum/{id}', [KomenController::class, 'read']);
+
+// ReviewLayanan
+Route::post('create-reviewLayanan/{idStudent}', [ReviewLayananController::class, 'create'])->middleware('allRole');
+Route::post('update-reviewLayanan/{id}', [ReviewLayananController::class, 'update'])->middleware('allRole');
+Route::delete('delete-reviewLayanan/{id}', [ReviewLayananController::class, 'delete'])->middleware('allRole');
+Route::post('read-reviewLayanan/{id}', [AnnouncementController::class, 'read']);

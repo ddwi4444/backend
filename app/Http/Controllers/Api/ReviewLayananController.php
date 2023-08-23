@@ -4,18 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ReviewLayananModel;
+use App\Models\TransaksiLayananModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewLayananController extends Controller
 {
-    public function create(Request $request, $idStudent)
+    public function create(Request $request, $idTransaksiLayanan)
     {
 
-        $dataStudent = User::where('id', $idStudent)->first();
+        $dataTransaksiLayanan = TransaksiLayananModel::where('id', $idTransaksiLayanan)->first();
 
-        if(is_null($dataStudent)){
+        if(is_null($dataTransaksiLayanan)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
         }
         
@@ -33,18 +34,21 @@ class ReviewLayananController extends Controller
 
         $user_id = auth()->user()->id;
         $post_by = auth()->user()->nama_persona;
+        $idServicer = $dataTransaksiLayanan->user_id_servicer;
+
 
         $dataReviewLayanan = collect($request)->only(ReviewLayananModel::filters())->all();
 
-        $dataReviewLayanan['user_id_reviewer'] = $user_id;
-        $dataReviewLayanan['user_id_student'] = $idStudent;
+        $dataReviewLayanan['user_id_customer'] = $user_id;
+        $dataReviewLayanan['user_id_servicer'] = $idServicer;
+        $dataReviewLayanan['transaksi_layanan_id'] = $idTransaksiLayanan;
         $dataReviewLayanan['post_by'] = $post_by;
 
-        $forum = ReviewLayananModel::create($dataReviewLayanan);
+        $ReviewLayanan = ReviewLayananModel::create($dataReviewLayanan);
 
         return response([
-            'message' => 'Forum Successfully Added',
-            'data' => $forum,
+            'message' => 'ReviewLayanan Successfully Added',
+            'data' => $ReviewLayanan,
         ], 200);
     }
 
@@ -54,13 +58,13 @@ class ReviewLayananController extends Controller
 
         if(!is_null($data)){
             return response([
-                'message' => 'Forum Succcessfully Showed',
+                'message' => 'ReviewLayanan Succcessfully Showed',
                 'data' => $data,
             ], 200);
         }
 
         return response([
-            'message' => 'Forum Unsucccessfully Showed',
+            'message' => 'ReviewLayanan Unsucccessfully Showed',
             'data' => null,
         ], 404);
     }
@@ -85,7 +89,7 @@ class ReviewLayananController extends Controller
         $dataReviewLayanan = collect($request)->only(ReviewLayananModel::filters())->all();
         $data->update($dataReviewLayanan);
 
-        return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Changed']);
+        return response()->json(['Success'=> true, 'message'=> 'ReviewLayanan Successfully Changed']);
     }
 
     public function delete($id)
@@ -98,6 +102,6 @@ class ReviewLayananController extends Controller
 
         $data->delete();
 
-        return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Deleted']);
+        return response()->json(['Success'=> true, 'message'=> 'ReviewLayanan Successfully Deleted']);
     }
 }

@@ -6,19 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ReviewLayananModel extends Model
+class TransaksiLayananModel extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "review_layanan";
+    protected $table = "transaksi_layanan";
 
     protected $fillable = [
-        'transaksi_layanan_id',
         'user_id_servicer',
         'user_id_customer',
-        'post_by',
-        'rating',
-        'isi',
+        'project_name',
+        'customer_name',
+        'offering_cost',
+        'description',
+        'storyboard',
+        'bukti_transaksi',
+        'is_deal',
+        'is_done'
     ];
 
     public static function filters(){
@@ -31,8 +35,9 @@ class ReviewLayananModel extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function transaksiLayanan()
+    // Definisikan relasi 1:1 ke model ReviewLayanan
+    public function reviewLayanan()
     {
-        return $this->belongsTo(TransaksiLayananModel::class);
+        return $this->hasOne(ReviewLayananModel::class);
     }
 }

@@ -15,17 +15,18 @@ return new class extends Migration
     {
         Schema::create('review_layanan', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id_student', 50)->references('id')->on('user');
-            $table->string('user_id_reviewer', 50)->references('id')->on('user');
+            $table->unsignedBigInteger('transaksi_layanan_id')->references('id')->on('transaksi_layanan');
+            $table->string('user_id_servicer', 50)->references('id')->on('user');
+            $table->string('user_id_customer', 50)->references('id')->on('user');
             $table->string('post_by');
             $table->string('isi');
             $table->integer('rating');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id_student')->references('id')->on('user')->onDelete('cascade');
-            $table->foreign('user_id_reviewer')->references('id')->on('user')->onDelete('cascade');
-
+            $table->foreign('transaksi_layanan_id')->references('id')->on('transaksi_layanan')->onDelete('cascade');
+            $table->foreign('user_id_servicer')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign('user_id_customer')->references('id')->on('user')->onDelete('cascade');
         });
     }
 

@@ -128,7 +128,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
         $credentials = request(['email', 'password']);
 
@@ -143,9 +143,12 @@ class AuthController extends Controller
             // something went wrong whilst attempting to encode the token
             return response()->json(['success' => false, 'error' => 'Failed to login, please try again.'], 500);
         }
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+
 
         // all good so return the token
-        return response()->json(['success' => true, 'data'=> [ 'token' => $token ]], 200);
+        return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user ]]);
     }
 
     /**

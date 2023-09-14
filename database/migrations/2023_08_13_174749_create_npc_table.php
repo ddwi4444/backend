@@ -16,13 +16,15 @@ return new class extends Migration
         Schema::create('npc', function (Blueprint $table) {
             $table->id();
             $table->string('user_id', 50)->references('id')->on('user');
-            $table->string('my_profile');
+            $table->string('npc_name');
+            $table->mediumText('npc_profile');
             $table->string('nama_author'); //menggunakan nama persona
-            $table->string('story');
+            $table->mediumText('npc_story');
             $table->string('image_npc');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->softDeletes();
         });
     }
 

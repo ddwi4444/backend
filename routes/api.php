@@ -67,6 +67,7 @@ Route::post('create-npc', [NPCController::class, 'create'])->middleware('Student
 Route::post('update-npc/{id}', [NPCController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-npc/{id}', [NPCController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-npc/{id}', [NPCController::class, 'read']);
+Route::post('show-all-npc', [NPCController::class, 'getAll']);
 
 // Merchandise
 Route::post('create-merchandise', [MerchandiseController::class, 'create'])->middleware('role:admin');

@@ -17,8 +17,9 @@ class NPCController extends Controller
         $storeData = $request->all();
 
         $validator = Validator::make($storeData, [
-            'my_profile' => 'required',
-            'story' => 'required',
+            'npc_name' => 'required',
+            'npc_profile' => 'required',
+            'npc_story' => 'required',
             'image_npc' => 'required|mimes:jpg,bmp,png',
         ]);
 
@@ -82,9 +83,9 @@ class NPCController extends Controller
 
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
-            'my_profile' => 'required',
-            'story' => 'required',
-            'image_npc' => 'required|mimes:jpg,bmp,png',
+            'npc_name' => 'required',
+            'npc_profile' => 'required',
+            'npc_story' => 'required',
         ]);
 
         //if validation fails
@@ -113,7 +114,7 @@ class NPCController extends Controller
 
         $data->update($dataNPC);
 
-        return response()->json(['Success' => true, 'message' => 'NPC Successfully Changed']);
+        return response(['Success' => true, 'message' => 'NPC Successfully Changed']);
     }
 
     // Menghapus npc
@@ -122,11 +123,20 @@ class NPCController extends Controller
         $data = NPCModel::where('id', $id)->first();
 
         if (is_null($data)) {
-            return response()->json(['Failure' => true, 'message' => 'Data not found']);
+            return response(['Failure' => true, 'message' => 'Data not found']);
         }
 
         $data->delete();
 
-        return response()->json(['Success' => true, 'message' => 'NPC Successfully Deleted']);
+        return response(['Success' => true, 'message' => 'NPC Successfully Deleted']);
+    }
+
+    public function getAll(){
+        $data = NPCModel::get();
+
+        return response([
+            'message' => 'NPC is succesfully show',
+            'data' => $data,
+        ], 200);
     }
 }

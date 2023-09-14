@@ -20,9 +20,10 @@ class NPCModel extends Model
      */
     protected $fillable = [
         'user_id',
-        'my_profile',
+        'npc_name',
+        'npc_profile',
         'nama_author',
-        'story',
+        'npc_story',
         'image_npc',
     ];
 

@@ -36,7 +36,7 @@ return new class extends Migration
             $table->string('like')->nullable();
             $table->string('did_not_like')->nullable();
             $table->string('quotes')->nullable();
-            $table->string('story_character')->nullable();
+            $table->mediumText('story_character')->nullable();
             $table->string('eskul')->nullable();
             $table->string('role')->default('user');
             $table->boolean('is_active')->default(1);

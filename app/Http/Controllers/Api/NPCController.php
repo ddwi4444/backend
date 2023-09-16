@@ -132,7 +132,7 @@ class NPCController extends Controller
     }
 
     public function getAll(){
-        $data = NPCModel::get();
+        $data = NPCModel::orderBy('updated_at', 'desc')->get();
 
         return response([
             'message' => 'NPC is succesfully show',

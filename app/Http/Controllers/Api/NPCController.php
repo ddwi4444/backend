@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\NPCModel;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 use Validator;
 
 class NPCController extends Controller
@@ -28,6 +29,16 @@ class NPCController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = NPCModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'NPC'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'NPC'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $nama_author = auth()->user()->nama_persona;
         $user_id = auth()->user()->id;
 
@@ -43,6 +54,7 @@ class NPCController extends Controller
             ['disk' => 'public']
         );
 
+        $dataNPC['uuid'] = $uuid;
         $dataNPC['image_npc'] = $uploadDoc;
         $dataNPC['nama_author'] = $nama_author;
         $dataNPC['user_id'] = $user_id;
@@ -55,9 +67,9 @@ class NPCController extends Controller
     }
 
     // Menampilkan NPC pada single page
-    public function read($id)
+    public function read($uuid)
     {
-        $data = NPCModel::where('id', $id)->first();
+        $data = NPCModel::where('uuid', $uuid)->first();
 
         if (!is_null($data)) {
             return response([
@@ -73,9 +85,9 @@ class NPCController extends Controller
     }
 
     // Untuk mengupdate NPC
-    public function update(Request $request, $id)
+    public function update(Request $request, $uuid)
     {
-        $data = NPCModel::find($id);
+        $data = NPCModel::where('uuid', $uuid)->first();
 
         if (is_null($data)) {
             return response()->json(['Failure' => true, 'message' => 'Data not found']);
@@ -118,9 +130,9 @@ class NPCController extends Controller
     }
 
     // Menghapus npc
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = NPCModel::where('id', $id)->first();
+        $data = NPCModel::where('uuid', $uuid)->first();
 
         if (is_null($data)) {
             return response(['Failure' => true, 'message' => 'Data not found']);

@@ -23,6 +23,16 @@ class PortofolioController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = PortofolioModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'Portfolio'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'Portfolio'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        } 
+
         $user_id = auth()->user()->id;
 
         $dataPortofolio = collect($request)->only(PortofolioModel::filters())->all();
@@ -37,6 +47,7 @@ class PortofolioController extends Controller
             ['disk' => 'public']
         );
 
+        $dataPortofolio['uuid'] = $uuid;
         $dataPortofolio['thumbnail'] = $uploadDoc;
         $dataPortofolio['user_id'] = $user_id;
 
@@ -48,9 +59,9 @@ class PortofolioController extends Controller
         ], 200);
     }
 
-    public function read($id)
+    public function read($uuid)
     {
-        $data = PortofolioModel::where('id', $id)->first();
+        $data = PortofolioModel::where('uuid', $uuid)->first();
 
         if(!is_null($data)){
             return response([
@@ -65,8 +76,8 @@ class PortofolioController extends Controller
         ], 404);
     }
 
-    public function update(Request $request, $id){
-        $data = PortofolioModel::find($id);
+    public function update(Request $request, $uuid){
+        $data = PortofolioModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -106,9 +117,9 @@ class PortofolioController extends Controller
         return response()->json(['Success'=> true, 'message'=> 'Portofolio Successfully Changed']);
     }
 
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = PortofolioModel::where('id', $id)->first();
+        $data = PortofolioModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

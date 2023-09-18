@@ -13,6 +13,7 @@ class ReviewLayananModel extends Model
     protected $table = "review_layanan";
 
     protected $fillable = [
+        'uuid',
         'transaksi_layanan_id',
         'user_id_servicer',
         'user_id_customer',

@@ -22,15 +22,26 @@ class ForumController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = ForumModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'Forum'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'Forum'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $user_id = auth()->user()->id;
         $post_by = auth()->user()->nama_persona;
 
-        $dataAnnouncement = collect($request)->only(ForumModel::filters())->all();
+        $dataForum = collect($request)->only(ForumModel::filters())->all();
 
-        $dataAnnouncement['user_id'] = $user_id;
-        $dataAnnouncement['post_by'] = $post_by;
+        $dataForum['uuid'] = $uuid;
+        $dataForum['user_id'] = $user_id;
+        $dataForum['post_by'] = $post_by;
 
-        $forum = ForumModel::create($dataAnnouncement);
+        $forum = ForumModel::create($dataForum);
 
         return response([
             'message' => 'Forum Successfully Added',
@@ -38,9 +49,9 @@ class ForumController extends Controller
         ], 200);
     }
 
-    public function read($id)
+    public function read($uuid)
     {
-        $data = ForumModel::where('id', $id)->first();
+        $data = ForumModel::where('uuid', $uuid)->first();
 
         if(!is_null($data)){
             return response([
@@ -55,8 +66,8 @@ class ForumController extends Controller
         ], 404);
     }
 
-    public function update(Request $request, $id){
-        $data = ForumModel::find($id);
+    public function update(Request $request, $uuid){
+        $data = ForumModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -72,15 +83,15 @@ class ForumController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $dataAnnouncement = collect($request)->only(ForumModel::filters())->all();
-        $data->update($dataAnnouncement);
+        $dataForum = collect($request)->only(ForumModel::filters())->all();
+        $data->update($dataForum);
 
         return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Changed']);
     }
 
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = ForumModel::where('id', $id)->first();
+        $data = ForumModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

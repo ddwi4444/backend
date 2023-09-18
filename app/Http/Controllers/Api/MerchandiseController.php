@@ -27,6 +27,16 @@ class MerchandiseController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = MerchandiseModell::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'Merchandise'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'Merchandise'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $user_id = auth()->user()->id;
 
         $dataMerchandise = collect($request)->only(MerchandiseModel::filters())->all();
@@ -41,6 +51,7 @@ class MerchandiseController extends Controller
             ['disk' => 'public']
         );
 
+        $dataMerchandise['uuid'] = $uuid;
         $dataMerchandise['thumbnail'] = $uploadDoc;
         $dataMerchandise['user_id'] = $user_id;
 
@@ -52,9 +63,9 @@ class MerchandiseController extends Controller
         ], 200);
     }
 
-    public function read($id)
+    public function read($uuid)
     {
-        $data = MerchandiseModel::where('id', $id)->first();
+        $data = MerchandiseModel::where('uuid', $uuid)->first();
 
         if(!is_null($data)){
             return response([
@@ -69,8 +80,8 @@ class MerchandiseController extends Controller
         ], 404);
     }
 
-    public function update(Request $request, $id){
-        $data = MerchandiseModel::find($id);
+    public function update(Request $request, $uuid){
+        $data = MerchandiseModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -114,9 +125,9 @@ class MerchandiseController extends Controller
         return response()->json(['Success'=> true, 'message'=> 'Merchandise Successfully Changed']);
     }
 
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = MerchandiseModel::where('id', $id)->first();
+        $data = MerchandiseModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

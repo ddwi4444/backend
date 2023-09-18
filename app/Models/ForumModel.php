@@ -13,6 +13,7 @@ class ForumModel extends Model
     protected $table = "forum";
 
     protected $fillable = [
+        'uuid',
         'user_id',
         'post_by',
         'isi',

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('forum', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid', 64)->unique();
             $table->string('user_id', 50)->references('id')->on('user');
             $table->string('post_by');
             $table->text('isi');

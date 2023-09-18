@@ -13,6 +13,7 @@ class TransaksiLayananModel extends Model
     protected $table = "transaksi_layanan";
 
     protected $fillable = [
+        'uuid',
         'user_id_servicer',
         'user_id_customer',
         'project_name',

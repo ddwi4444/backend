@@ -36,6 +36,16 @@ class SubKomikController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = SubKomikModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'SubComic'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'SubComic'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $nama_author = auth()->user()->nama_persona;
         $user_id = auth()->user()->id;
         $komik_id = $id;
@@ -64,6 +74,7 @@ class SubKomikController extends Controller
             ['disk' => 'public']
         );
 
+        $dataKomik['uuid'] = $uuid;
         $dataKomik['content'] = $uploadDocContent;
         $dataKomik['thumbnail'] = $uploadDoc;
         $dataKomik['post_by'] = $nama_author;
@@ -79,9 +90,9 @@ class SubKomikController extends Controller
     }
 
     // Menampilkan komik pada single page
-    public function read($id)
+    public function read($uuid)
     {
-        $data = SubKomikModel::where('id', $id)->first();
+        $data = SubKomikModel::where('uuid', $uuid)->first();
 
         if (!is_null($data)) {
             return response([
@@ -97,9 +108,9 @@ class SubKomikController extends Controller
     }
 
     // Untuk mengupdate komik
-    public function update(Request $request, $id)
+    public function update(Request $request, $uuid)
     {
-        $data = SubKomikModel::find($id);
+        $data = SubKomikModel::where('uuid', $uuid)->first();
 
         if (is_null($data)) {
             return response()->json(['Failure' => true, 'message' => 'Data not found']);
@@ -163,9 +174,9 @@ class SubKomikController extends Controller
     }
 
     // Menghapus Komik
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = SubKomikModel::where('id', $id)->first();
+        $data = SubKomikModel::where('uuid', $uuid)->first();
 
         if (is_null($data)) {
             return response()->json(['Failure' => true, 'message' => 'Data not found']);

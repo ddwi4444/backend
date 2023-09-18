@@ -30,10 +30,21 @@ class KomenController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = KomenModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'Comment'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'Comment'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $user_id = auth()->user()->id;
         $komen_by = auth()->user()->nama_persona;
 
         $dataKomen = collect($request)->only(KomenModel::filters())->all();
+        $dataKomen['uuid'] = $uuid;
         $dataKomen['user_id'] = $user_id;
         $dataKomen['komen_by'] = $komen_by;
         $dataKomen['sub_komik_id'] = $idKomik;
@@ -71,10 +82,21 @@ class KomenController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = KomenModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'Comment'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'Comment'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $user_id = auth()->user()->id;
         $komen_by = auth()->user()->nama_persona;
 
         $dataKomen = collect($request)->only(KomenModel::filters())->all();
+        $dataKomen['uuid'] = $uuid;
         $dataKomen['user_id'] = $user_id;
         $dataKomen['komen_by'] = $komen_by;
         $dataKomen['sub_komik_id'] = $idKomik;
@@ -89,9 +111,9 @@ class KomenController extends Controller
     }
 
     // Untuk membaca komen
-    public function read($id)
+    public function read($uuid)
     {
-        $data = KomenModel::where('id', $id)->first();
+        $data = KomenModel::where('uuid', $uuid)->first();
 
         if(!is_null($data)){
             return response([
@@ -107,9 +129,9 @@ class KomenController extends Controller
     }
 
     // Menghapus komen
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = KomenModel::where('id', $id)->first();
+        $data = KomenModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

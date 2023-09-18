@@ -34,7 +34,15 @@ class TransaksiLayananController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-
+        // Store UUID
+        $get_data = TransaksiLayananModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'ServicesTransaction'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'ServicesTransaction'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
 
         $user_id = auth()->user()->id;
         $customer_name = auth()->user()->nama_persona;
@@ -55,6 +63,7 @@ class TransaksiLayananController extends Controller
             $dataTransaksiLayanan['storyboard'] = $uploadDoc;
         }
 
+        $dataTransaksiLayanan['uuid'] = $uuid;
         $dataTransaksiLayanan['user_id_customer'] = $user_id;
         $dataTransaksiLayanan['user_id_servicer'] = $idServicer;
         $dataTransaksiLayanan['customer_name'] = $customer_name;
@@ -68,9 +77,9 @@ class TransaksiLayananController extends Controller
     }
 
     // Melihat Transaksi Layanan
-    public function read($id)
+    public function read($uuid)
     {
-        $data = TransaksiLayananModel::where('id', $id)->first();
+        $data = TransaksiLayananModel::where('uuid', $uuid)->first();
 
         if(!is_null($data)){
             return response([
@@ -86,9 +95,9 @@ class TransaksiLayananController extends Controller
     }
 
     //Menghapus Transaksi Layanan
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = TransaksiLayananModel::where('id', $id)->first();
+        $data = TransaksiLayananModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

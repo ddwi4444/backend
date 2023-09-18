@@ -13,6 +13,7 @@ class MerchandiseModel extends Model
     protected $table = "merchandise";
 
     protected $fillable = [
+        'uuid',
         'user_id',
         'nama',
         'deskripsi',

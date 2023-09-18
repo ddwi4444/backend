@@ -19,6 +19,7 @@ class KomenModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'uuid',
         'user_id',
         'sub_komik_id',
         'komen_parent_id',

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('review_layanan', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid', 64)->unique();
             $table->unsignedBigInteger('transaksi_layanan_id')->references('id')->on('transaksi_layanan');
             $table->string('user_id_servicer', 50)->references('id')->on('user');
             $table->string('user_id_customer', 50)->references('id')->on('user');

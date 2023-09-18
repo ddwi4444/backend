@@ -32,6 +32,16 @@ class ReviewLayananController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = ReviewLayananModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'ReviewServices'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'ReviewServices'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $user_id = auth()->user()->id;
         $post_by = auth()->user()->nama_persona;
         $idServicer = $dataTransaksiLayanan->user_id_servicer;
@@ -39,6 +49,7 @@ class ReviewLayananController extends Controller
 
         $dataReviewLayanan = collect($request)->only(ReviewLayananModel::filters())->all();
 
+        $dataReviewLayanan['uuid'] = $uuid;
         $dataReviewLayanan['user_id_customer'] = $user_id;
         $dataReviewLayanan['user_id_servicer'] = $idServicer;
         $dataReviewLayanan['transaksi_layanan_id'] = $idTransaksiLayanan;
@@ -52,9 +63,9 @@ class ReviewLayananController extends Controller
         ], 200);
     }
 
-    public function read($id)
+    public function read($uuid)
     {
-        $data = ReviewLayananModel::where('id', $id)->first();
+        $data = ReviewLayananModel::where('uuid', $uuid)->first();
 
         if(!is_null($data)){
             return response([
@@ -69,8 +80,8 @@ class ReviewLayananController extends Controller
         ], 404);
     }
 
-    public function update(Request $request, $id){
-        $data = ReviewLayananModel::find($id);
+    public function update(Request $request, $uuid){
+        $data = ReviewLayananModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -92,9 +103,9 @@ class ReviewLayananController extends Controller
         return response()->json(['Success'=> true, 'message'=> 'ReviewLayanan Successfully Changed']);
     }
 
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = ReviewLayananModel::where('id', $id)->first();
+        $data = ReviewLayananModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

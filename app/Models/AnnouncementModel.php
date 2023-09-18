@@ -13,6 +13,7 @@ class AnnouncementModel extends Model
     protected $table = "announcement";
 
     protected $fillable = [
+        'uuid',
         'user_id',
         'post_by',
         'isi',

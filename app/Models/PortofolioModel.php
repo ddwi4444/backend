@@ -14,6 +14,7 @@ class PortofolioModel extends Model
 
 
     protected $fillable = [
+        'uuid',
         'user_id',
         'thumbnail',
         'link',

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('portofolio', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid', 64)->unique();
             $table->string('user_id', 50)->references('id')->on('user');
             $table->string('thumbnail');
             $table->string('link')->nullable();

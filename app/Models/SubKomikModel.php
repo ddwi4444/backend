@@ -19,6 +19,7 @@ class SubKomikModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'uuid',
         'komik_id',
         'user_id',
         'judul',

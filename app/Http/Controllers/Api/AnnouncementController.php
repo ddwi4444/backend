@@ -22,11 +22,23 @@ class AnnouncementController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Store UUID
+        $get_data = AnnouncementModel::orderBy('created_at','DESC')->first();
+        if(is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex().'Announcement'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        } else {
+            $find = substr($get_data->id, -9);
+            $increment = $find + 1;
+            $uuid = Uuid::uuid4()->getHex().'Announcement'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+        }
+
         $user_id = auth()->user()->id;
         $post_by = auth()->user()->nama_persona;
 
+
         $dataAnnouncement = collect($request)->only(AnnouncementModel::filters())->all();
 
+        $dataAnnouncement['uuid'] = $uuid;
         $dataAnnouncement['user_id'] = $user_id;
         $dataAnnouncement['post_by'] = $post_by;
 
@@ -38,9 +50,9 @@ class AnnouncementController extends Controller
         ], 200);
     }
 
-    public function read($id)
+    public function read($uuid)
     {
-        $data = AnnouncementModel::where('id', $id)->first();
+        $data = AnnouncementModel::where('uuid', $uuid)->first();
 
         if(!is_null($data)){
             return response([
@@ -55,8 +67,8 @@ class AnnouncementController extends Controller
         ], 404);
     }
 
-    public function update(Request $request, $id){
-        $data = AnnouncementModel::find($id);
+    public function update(Request $request, $uuid){
+        $data = AnnouncementModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -78,9 +90,9 @@ class AnnouncementController extends Controller
         return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Changed']);
     }
 
-    public function delete($id)
+    public function delete($uuid)
     {
-        $data = AnnouncementModel::where('id', $id)->first();
+        $data = AnnouncementModel::where('uuid', $uuid)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);

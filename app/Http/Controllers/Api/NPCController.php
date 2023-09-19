@@ -143,6 +143,7 @@ class NPCController extends Controller
         return response(['Success' => true, 'message' => 'NPC Successfully Deleted']);
     }
 
+    // Show all NPC for Admin
     public function getAll(){
         $data = NPCModel::orderBy('updated_at', 'desc')->get();
 

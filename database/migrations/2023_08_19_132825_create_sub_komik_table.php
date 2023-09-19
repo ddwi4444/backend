@@ -24,9 +24,7 @@ return new class extends Migration
             $table->integer('chapter')->nullable();
             $table->unsignedBiginteger('jumlah_view')->nullable();
 	        $table->unsignedBiginteger('jumlah_like')->nullable();
-            $table->string('nama_author')->nullable();
             $table->string('post_by');
-            $table->string('instagram_author');
             $table->boolean('status')->default(0);
             $table->softDeletes();
 

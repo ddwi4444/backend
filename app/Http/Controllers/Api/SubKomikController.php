@@ -28,7 +28,6 @@ class SubKomikController extends Controller
             'thumbnail' => 'required|mimes:jpg,bmp,png',
             'content' => 'required',
             'chapter' => 'required',
-            'instagram_author' => 'required',
         ]);
 
         //if validation fails
@@ -121,9 +120,7 @@ class SubKomikController extends Controller
             'judul' => 'required',
             'genre' => 'required',
             'thumbnail' => 'required|mimes:jpg,bmp,png',
-            'instagram_author' => 'required',
             'content' => 'required',
-            'nama_author' => 'required',
         ]);
 
         //if validation fails

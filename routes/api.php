@@ -54,6 +54,8 @@ Route::post('create-komik', [KomikController::class, 'create'])->middleware('Stu
 Route::post('update-komik/{id}', [KomikController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-komik/{id}', [KomikController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-komik/{id}', [KomikController::class, 'read']);
+Route::get('show-all-comic', [KomikController::class, 'getAll'])->middleware('Admin');
+
 
 // SubKomik
 Route::post('create-subkomik/{id}', [SubKomikController::class, 'create'])->middleware('StudentOsisAdmin');
@@ -67,7 +69,7 @@ Route::post('create-npc', [NPCController::class, 'create'])->middleware('Student
 Route::post('update-npc/{uuid}', [NPCController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-npc/{uuid}', [NPCController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-npc/{uuid}', [NPCController::class, 'read']);
-Route::post('show-all-npc', [NPCController::class, 'getAll']);
+Route::get('show-all-npc', [NPCController::class, 'getAll'])->middleware('Admin');
 
 // Merchandise
 Route::post('create-merchandise', [MerchandiseController::class, 'create'])->middleware('role:admin');

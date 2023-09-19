@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\KomikModel;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 use Validator;
 
 class KomikController extends Controller
@@ -21,7 +22,7 @@ class KomikController extends Controller
             'genre' => 'required',
             'thumbnail' => 'required|mimes:jpg,bmp,png',
             'volume' => 'required',
-            'nama_author' => 'required',
+            'instagram_author' => 'required',
         ]);
 
         //if validation fails
@@ -99,7 +100,7 @@ class KomikController extends Controller
             'genre' => 'required',
             'thumbnail' => 'required|mimes:jpg,bmp,png',
             'volume' => 'required',
-            'nama_author' => 'required',
+            'instagram_author' => 'required',
         ]);
 
         //if validation fails
@@ -143,5 +144,15 @@ class KomikController extends Controller
         $data->delete();
 
         return response()->json(['Success' => true, 'message' => 'Komik Successfully Deleted']);
+    }
+
+    // Show all Komik for Admin
+    public function getAll(){
+        $data = KomikModel::orderBy('updated_at', 'desc')->get();
+
+        return response([
+            'message' => 'Comic is succesfully show',
+            'data' => $data,
+        ], 200);
     }
 }

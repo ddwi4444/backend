@@ -27,7 +27,7 @@ class KomikModel extends Model
         'thumbnail',
         'jumlah_like',
         'volume',
-        'nama_author',
+        'instagram_author',
         'status'
     ];
 

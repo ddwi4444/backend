@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('thumbnail');
             $table->unsignedBiginteger('jumlah_like')->nullable();
             $table->integer('volume');
-            $table->string('nama_author');
+            $table->string('instagram_author');
             $table->boolean('status')->default(0);
             $table->softDeletes();
             $table->timestamps();

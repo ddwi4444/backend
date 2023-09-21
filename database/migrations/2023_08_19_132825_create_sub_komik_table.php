@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('judul');
             $table->string('thumbnail');
             $table->string('content');
-            $table->integer('chapter')->nullable();
+            $table->string('chapter')->nullable();
             $table->unsignedBiginteger('jumlah_view')->nullable();
 	        $table->unsignedBiginteger('jumlah_like')->nullable();
             $table->string('post_by');

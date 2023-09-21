@@ -98,7 +98,6 @@ class KomikController extends Controller
         $validator = Validator::make($updateData, [
             'judul' => 'required',
             'genre' => 'required',
-            'thumbnail' => 'required|mimes:jpg,bmp,png',
             'volume' => 'required',
             'instagram_author' => 'required',
         ]);

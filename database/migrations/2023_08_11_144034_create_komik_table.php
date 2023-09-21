@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('genre');
             $table->string('thumbnail');
             $table->unsignedBiginteger('jumlah_like')->nullable();
-            $table->integer('volume');
+            $table->string('volume')->nullable();
             $table->string('instagram_author');
             $table->boolean('status')->default(0);
             $table->softDeletes();

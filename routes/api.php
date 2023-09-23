@@ -59,9 +59,11 @@ Route::get('show-all-comic', [KomikController::class, 'getAll'])->middleware('Ad
 
 // SubKomik
 Route::post('create-subkomik/{id}', [SubKomikController::class, 'create'])->middleware('StudentOsisAdmin');
-Route::post('update-subkomik/{id}', [SubKomikController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::post('update-subkomik/{uuid}', [SubKomikController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-subkomik/{id}', [SubKomikController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-subkomik/{id}', [SubKomikController::class, 'read']);
+Route::get('show-all-subcomic/{id}', [SubKomikController::class, 'getAll'])->middleware('Admin');
+
 
 
 // NPC

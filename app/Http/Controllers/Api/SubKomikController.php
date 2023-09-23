@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\SubKomikModel;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 use Validator;
 
 class SubKomikController extends Controller
@@ -26,7 +27,7 @@ class SubKomikController extends Controller
         $validator = Validator::make($storeData, [
             'judul' => 'required',
             'thumbnail' => 'required|mimes:jpg,bmp,png',
-            'content' => 'required',
+            'content' => 'required|mimes:jpg,bmp,png',
             'chapter' => 'required',
         ]);
 
@@ -118,9 +119,7 @@ class SubKomikController extends Controller
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
             'judul' => 'required',
-            'genre' => 'required',
-            'thumbnail' => 'required|mimes:jpg,bmp,png',
-            'content' => 'required',
+            'chapter' => 'required',
         ]);
 
         //if validation fails
@@ -182,5 +181,17 @@ class SubKomikController extends Controller
         $data->delete();
 
         return response()->json(['Success' => true, 'message' => 'Komik Successfully Deleted']);
+    }
+
+    // Show all Komik for Admin
+    public function getAll($id){
+        $data = SubKomikModel::where('komik_id', $id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        return response([
+            'message' => 'Sub Comic is succesfully show',
+            'data' => $data,
+        ], 200);
     }
 }

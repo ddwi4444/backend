@@ -29,7 +29,6 @@ class SubKomikModel extends Model
         'post_by',
         'jumlah_view',
         'jumlah_like',
-        'nama_author',
         'instagram_author',
         'status'
     ];

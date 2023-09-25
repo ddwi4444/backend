@@ -80,10 +80,12 @@ Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'
 Route::post('read-merchandise/{id}', [MerchandiseController::class, 'read']);
 
 // Portofolio
-Route::post('create-portofolio', [PortofolioController::class, 'create'])->middleware('StudentOsisAdmin');
-Route::post('update-portofolio/{id}', [PortofolioController::class, 'update'])->middleware('StudentOsisAdmin');
-Route::delete('delete-portofolio/{id}', [PortofolioController::class, 'delete'])->middleware('StudentOsisAdmin');
-Route::post('read-portofolio/{id}', [PortofolioController::class, 'read']);
+Route::post('create-portfolio', [PortofolioController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('update-portfolio/{id}', [PortofolioController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::delete('delete-portfolio/{id}', [PortofolioController::class, 'delete'])->middleware('StudentOsisAdmin');
+Route::post('read-portfolio/{id}', [PortofolioController::class, 'read']);
+Route::get('show-all-portfolio', [PortofolioController::class, 'getAll'])->middleware('Admin');
+
 
 // Forum
 Route::post('create-forum', [ForumController::class, 'create'])->middleware('StudentOsisAdmin');

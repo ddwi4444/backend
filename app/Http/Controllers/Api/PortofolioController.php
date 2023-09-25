@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PortofolioModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Validator;
 
 class PortofolioController extends Controller
@@ -128,5 +129,15 @@ class PortofolioController extends Controller
         $data->delete();
 
         return response()->json(['Success'=> true, 'message'=> 'Portofolio Successfully Deleted']);
+    }
+
+    // Show all NPC for Admin
+    public function getAll(){
+        $data = PortofolioModel::orderBy('created_at', 'desc')->get();
+
+        return response([
+            'message' => 'Portfolio is succesfully show',
+            'data' => $data,
+        ], 200);
     }
 }

@@ -3,65 +3,78 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\imagesMerchandiseModel;
 use App\Models\MerchandiseModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class MerchandiseController extends Controller
 {
     public function create(Request $request)
     {
-        $storeData = $request->all();
+    $storeData = $request->all();
+    $images = $request->file('images_merchandise_path'); // Ganti 'images' sesuai dengan nama field yang digunakan dalam v-file-input
 
-        $validator = Validator::make($storeData, [
-            'nama' => 'required',
-            'deskripsi' => 'required',
-            'thumbnail' => 'required|mimes:jpg,bmp,png',
-            'harga' => 'required|numeric',
-            'stok' => 'required|numeric',
-        ]);
+    $validator = Validator::make($storeData, [
+        'nama' => 'required',
+        'deskripsi' => 'required',
+        'thumbnail' => 'required|mimes:jpg,bmp,png',
+        'harga' => 'required|numeric',
+        'stok' => 'required|numeric',
+    ]);
 
-        //if validation fails
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        // Store UUID
-        $get_data = MerchandiseModell::orderBy('created_at','DESC')->first();
-        if(is_null($get_data)) {
-            $uuid = Uuid::uuid4()->getHex().'Merchandise'.date('ymd').'-'.sprintf('%09d', 1); // toString();
-        } else {
-            $find = substr($get_data->id, -9);
-            $increment = $find + 1;
-            $uuid = Uuid::uuid4()->getHex().'Merchandise'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
-        }
-
-        $user_id = auth()->user()->id;
-
-        $dataMerchandise = collect($request)->only(MerchandiseModel::filters())->all();
-
-        $image_name = \Str::random(5).str_replace(' ', '', $dataMerchandise['nama']).\Str::random(5);
-        $file = $dataMerchandise['thumbnail'];
-        $extension = $file->getClientOriginalExtension();
-
-        $uploadDoc = $request->thumbnail->storeAs(
-            'merchandise_thumbnail',
-            $image_name.'.'.$extension,
-            ['disk' => 'public']
-        );
-
-        $dataMerchandise['uuid'] = $uuid;
-        $dataMerchandise['thumbnail'] = $uploadDoc;
-        $dataMerchandise['user_id'] = $user_id;
-
-        $merchandise = MerchandiseModel::create($dataMerchandise);
-
-        return response([
-            'message' => 'Merchandise Successfully Added',
-            'data' => $merchandise,
-        ], 200);
+    //if validation fails
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
     }
+
+    // Store UUID
+    $get_data = MerchandiseModel::orderBy('created_at','DESC')->first();
+    if(is_null($get_data)) {
+        $uuid = Uuid::uuid4()->getHex().'Merchandise'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+    } else {
+        $find = substr($get_data->id, -9);
+        $increment = $find + 1;
+        $uuid = Uuid::uuid4()->getHex().'Merchandise'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+    }
+
+    $user_id = auth()->user()->id;
+
+    $dataMerchandise = collect($request)->only(MerchandiseModel::filters())->all();
+
+    $image_name = \Str::random(5).str_replace(' ', '', $dataMerchandise['nama']).\Str::random(5);
+    $file = $dataMerchandise['thumbnail'];
+    $extension = $file->getClientOriginalExtension();
+
+    $uploadDoc = $request->thumbnail->storeAs(
+        'merchandise_thumbnail',
+        $image_name.'.'.$extension,
+        ['disk' => 'public']
+    );
+
+    $dataMerchandise['uuid'] = $uuid;
+    $dataMerchandise['thumbnail'] = $uploadDoc;
+    $dataMerchandise['user_id'] = $user_id;
+
+    $merchandise = MerchandiseModel::create($dataMerchandise);
+
+    // Store each image
+    foreach($images as $image) {
+        $imagePath = $image->store('/images-merchandise-path', 'public');
+        imagesMerchandiseModel::create([
+            'merchandise_id' => $merchandise->id,
+            'images_merchandise_path' => $imagePath,
+        ]);
+    }
+    
+    return response([
+        'message' => 'Merchandise Successfully Added',
+        'data' => $merchandise,
+    ], 200);
+}
+
 
     public function read($uuid)
     {
@@ -91,7 +104,6 @@ class MerchandiseController extends Controller
         $validator = Validator::make($updateData, [
             'nama' => 'required',
             'deskripsi' => 'required',
-            'thumbnail' => 'required|mimes:jpg,bmp,png',
             'harga' => 'required|numeric',
             'stok' => 'required|numeric',
         ]);
@@ -138,5 +150,14 @@ class MerchandiseController extends Controller
         return response()->json(['Success'=> true, 'message'=> 'Merchandise Successfully Deleted']);
     }
 
+    // Show all Merchandise for Admin
+    public function getAll(){
+        $data = MerchandiseModel::orderBy('updated_at', 'desc')->get();
+
+        return response([
+            'message' => 'Merchandise is succesfully show',
+            'data' => $data,
+        ], 200);
+    }
     
 }

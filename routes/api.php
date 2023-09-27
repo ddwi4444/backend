@@ -74,10 +74,12 @@ Route::post('read-npc/{uuid}', [NPCController::class, 'read']);
 Route::get('show-all-npc', [NPCController::class, 'getAll'])->middleware('Admin');
 
 // Merchandise
-Route::post('create-merchandise', [MerchandiseController::class, 'create'])->middleware('role:admin');
-Route::post('update-merchandise/{id}', [MerchandiseController::class, 'update'])->middleware('role:admin');
-Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'])->middleware('role:admin');
+Route::post('create-merchandise', [MerchandiseController::class, 'create'])->middleware('Admin');
+Route::post('update-merchandise/{id}', [MerchandiseController::class, 'update'])->middleware('Admin');
+Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'])->middleware('Admin');
 Route::post('read-merchandise/{id}', [MerchandiseController::class, 'read']);
+Route::get('show-all-merchandise', [MerchandiseController::class, 'getAll'])->middleware('Admin');
+
 
 // Portofolio
 Route::post('create-portfolio', [PortofolioController::class, 'create'])->middleware('StudentOsisAdmin');

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('nama');
             $table->string('deskripsi');
             $table->string('thumbnail');
-            $table->integer('harga');
-            $table->integer('stok');
+            $table->string('harga');
+            $table->string('stok');
             $table->timestamps();
             $table->softDeletes();
 

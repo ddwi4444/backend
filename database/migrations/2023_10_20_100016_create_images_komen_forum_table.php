@@ -13,16 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('forum', function (Blueprint $table) {
+        Schema::create('images_komen_forum', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
-            $table->string('user_id', 50)->references('id')->on('user');
-            $table->string('post_by');
-            $table->mediumText('isi');
+            $table->unsignedBigInteger('komenForum_id')->references('id')->on('komen_forum');
+            $table->string('images_komenForum_path');
+
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign('komenForum_id')->references('id')->on('komen_forum')->onDelete('cascade');
         });
     }
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('forum');
+        Schema::dropIfExists('images_komen_forum');
     }
 };

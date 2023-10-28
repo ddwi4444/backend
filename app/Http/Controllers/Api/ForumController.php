@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ForumModel;
+use App\Models\imagesForumModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
+
 
 class ForumController extends Controller
 {
     public function create(Request $request)
     {
         $storeData = $request->all();
+        $images = $request->file('images_forum_path'); // Ganti 'images' sesuai dengan nama field yang digunakan dalam v-file-input
 
         $validator = Validator::make($storeData, [
             'isi' => 'required',
@@ -42,6 +46,17 @@ class ForumController extends Controller
         $dataForum['post_by'] = $post_by;
 
         $forum = ForumModel::create($dataForum);
+
+        // Store each image
+        if($images != null){
+            foreach($images as $image) {
+                $imagePath = $image->store('/images-forum-path', 'public');
+                imagesForumModel::create([
+                    'forum_id' => $forum->id,
+                    'images_forum_path' => $imagePath,
+                ]);
+            }
+        }
 
         return response([
             'message' => 'Forum Successfully Added',
@@ -100,5 +115,17 @@ class ForumController extends Controller
         $data->delete();
 
         return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Deleted']);
+    }
+
+    // Show all Komik for Admin
+    public function getAll(){
+        $data = ForumModel::orderBy('updated_at', 'desc')->get();
+        $imagesForum = imagesForumModel::orderBy('updated_at', 'desc')->get();
+
+        return response([
+            'message' => 'Forum is succesfully show',
+            'data' => $data,
+            'imagesForum' => $imagesForum
+        ], 200);
     }
 }

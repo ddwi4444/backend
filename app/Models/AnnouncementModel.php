@@ -28,4 +28,9 @@ class AnnouncementModel extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function imagesAnnouncements()
+    {
+        return $this->hasMany(imagesAnnouncementModel::class);
+    }
 }

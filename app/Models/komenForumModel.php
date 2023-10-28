@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class KomenModel extends Model
+class komenForumModel extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "komen";
+    protected $table = "komen_forum";
     protected $primaryKey = 'id';
 
     /**
@@ -21,11 +21,10 @@ class KomenModel extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-        'sub_komik_id',
-        'komen_parent_id',
+        'forum_id',
+        'komenForum_parent_id',
         'isi',
         'komen_by',
-        'status',
         'is_reported',
         'status'
     ];
@@ -40,13 +39,18 @@ class KomenModel extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function komen()
+    public function komenForums()
     {
-        return $this->belongsTo(KomenModel::class);
+        return $this->belongsTo(komenForumModel::class);
     }
 
-    public function subKomiks()
+    public function forums()
     {
-        return $this->hasMany(SubKomikModel::class);
+        return $this->hasMany(ForumModel::class);
+    }
+
+    public function imagesForumKomen()
+    {
+        return $this->hasMany(imagesKomenForumModel::class);
     }
 }

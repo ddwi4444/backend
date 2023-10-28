@@ -4,14 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AnnouncementModel;
+use App\Models\imagesAnnouncementModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class AnnouncementController extends Controller
 {
     public function create(Request $request)
     {
         $storeData = $request->all();
+        $images = $request->file('images_announcement_path'); // Ganti 'images' sesuai dengan nama field yang digunakan dalam v-file-input
 
         $validator = Validator::make($storeData, [
             'isi' => 'required',
@@ -42,11 +46,22 @@ class AnnouncementController extends Controller
         $dataAnnouncement['user_id'] = $user_id;
         $dataAnnouncement['post_by'] = $post_by;
 
-        $forum = AnnouncementModel::create($dataAnnouncement);
+        $announcement = AnnouncementModel::create($dataAnnouncement);
+
+        // Store each image
+        if($images != null){
+            foreach($images as $image) {
+                $imagePath = $image->store('/images-announcement-path', 'public');
+                imagesAnnouncementModel::create([
+                    'announcement_id' => $announcement->id,
+                    'images_announcement_path' => $imagePath,
+                ]);
+            }
+        }
 
         return response([
-            'message' => 'Forum Successfully Added',
-            'data' => $forum,
+            'message' => 'Announcement Successfully Added',
+            'data' => $announcement,
         ], 200);
     }
 
@@ -101,5 +116,20 @@ class AnnouncementController extends Controller
         $data->delete();
 
         return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Deleted']);
+    }
+
+    // Show all NPC for Admin
+    public function getAll(){
+        $dataAnnouncement = AnnouncementModel::orderBy('created_at', 'desc')->get();
+        $dataUser = User::orderBy('created_at', 'desc')->get();
+        $dataImagesAnnouncement = imagesAnnouncementModel::orderBy('created_at', 'desc')->get();
+
+
+        return response([
+            'message' => 'Announcement is succesfully show',
+            'dataAnnouncement' => $dataAnnouncement,
+            'dataUser' => $dataUser,
+            'dataImagesAnnouncement' => $dataImagesAnnouncement,
+        ], 200);
     }
 }

@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class imagesMerchandiseModel extends Model
+class imagesKomenForumModel extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "images_merchandise";
+    protected $table = "images_komen_forum";
 
     /**
      * The attributes that are mass assignable.
@@ -18,12 +18,12 @@ class imagesMerchandiseModel extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'merchandise_id',
-        'images_merchandise_path',
+        'komenForum_id',
+        'images_komenForum_path',
     ];
 
-    public function merchandise()
+    public function komenForum()
     {
-        return $this->belongsTo(MerchandiseModel::class);
+        return $this->belongsTo(komenForumModel::class);
     }
 }

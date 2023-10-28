@@ -28,4 +28,14 @@ class ForumModel extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function imagesForums()
+    {
+        return $this->hasMany(imagesForumModel::class);
+    }
+
+    public function komenForums()
+    {
+        return $this->hasMany(komenForumModel::class);
+    }
 }

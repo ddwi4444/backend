@@ -13,16 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('forum', function (Blueprint $table) {
+        Schema::create('images_announcement', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
-            $table->string('user_id', 50)->references('id')->on('user');
-            $table->string('post_by');
-            $table->mediumText('isi');
+            $table->unsignedBigInteger('announcement_id')->references('id')->on('announcement');
+            $table->string('images_announcement_path');
+
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
+            $table->foreign('announcement_id')->references('id')->on('announcement')->onDelete('cascade');
         });
     }
 
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('forum');
+        Schema::dropIfExists('images_announcement');
     }
 };

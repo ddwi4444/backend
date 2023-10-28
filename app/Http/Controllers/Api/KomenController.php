@@ -7,6 +7,7 @@ use App\Models\KomenModel;
 use App\Models\KomikModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class KomenController extends Controller
 {
@@ -48,11 +49,11 @@ class KomenController extends Controller
         $dataKomen['user_id'] = $user_id;
         $dataKomen['komen_by'] = $komen_by;
         $dataKomen['sub_komik_id'] = $idKomik;
-        $forum = KomenModel::create($dataKomen);
+        $komen = KomenModel::create($dataKomen);
 
         return response([
             'message' => 'Komen Successfully Added',
-            'data' => $forum,
+            'data' => $komen,
         ], 200);
     }
 

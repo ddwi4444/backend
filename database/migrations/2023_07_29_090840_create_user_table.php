@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('nama_OC', 100)->nullable();
             $table->string('no_tlp', 100)->nullable();
 	        $table->string('image')->nullable();
+            $table->string('ig_acc')->nullable();
 	        $table->boolean('is_verified')->default(0);
             $table->integer('umur')->nullable();
             $table->integer('umur_rl')->nullable();

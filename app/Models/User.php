@@ -38,6 +38,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'is_verified',
         'image',
+        'ig_acc',
         'nama_OC',
         'no_tlp',
         'umur',

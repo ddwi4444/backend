@@ -20,23 +20,20 @@ class StudentController extends Controller
 
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
-            'nama_OC' => 'required',
-            'no_tlp' => 'required|numeric',
+            'nama_persona' =>'required',
             'umur' => 'required',
             'tanggal_lahir' => 'required',
-            'umur_rl' => 'required',
-            'tanggal_lahir_rl' => 'required',
             'zodiak' => 'required',
             'ras' => 'required',
             'tinggi_badan' => 'required',
             'berat_badan' => 'required',
             'MBTI' => 'required',
             'hobi' => 'required',
+            'ig_acc' => 'required',
             'like' => 'required',
             'did_not_like' => 'required',
             'quotes' => 'required',
             'story_character' => 'required',
-            'eskul' => 'required',
             'image' => 'required|mimes:jpg,bmp,png',
         ]);
 

@@ -49,6 +49,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 
 // User
 Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::get('get-my-profile/{uuid}', [StudentController::class, 'getMyProfile'])->middleware('allRole');
+
 
 // Komik
 Route::post('create-komik', [KomikController::class, 'create'])->middleware('StudentOsisAdmin');

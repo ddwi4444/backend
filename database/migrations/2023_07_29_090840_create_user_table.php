@@ -24,14 +24,14 @@ return new class extends Migration
 	        $table->string('image')->nullable();
             $table->string('ig_acc')->nullable();
 	        $table->boolean('is_verified')->default(0);
-            $table->integer('umur')->nullable();
-            $table->integer('umur_rl')->nullable();
+            $table->string('umur')->nullable();
+            $table->string('umur_rl')->nullable();
             $table->date('tanggal_lahir')->nullable();
             $table->date('tanggal_lahir_rl')->nullable();
             $table->string('ras')->nullable();
             $table->string('zodiak')->nullable();
-            $table->integer('tinggi_badan')->nullable();
-            $table->integer('berat_badan')->nullable();
+            $table->string('tinggi_badan')->nullable();
+            $table->string('berat_badan')->nullable();
             $table->string('MBTI')->nullable();
 	        $table->string('hobi')->nullable();
             $table->string('like')->nullable();

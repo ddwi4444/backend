@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+
 
 class StudentController extends Controller
 {
@@ -34,7 +36,6 @@ class StudentController extends Controller
             'did_not_like' => 'required',
             'quotes' => 'required',
             'story_character' => 'required',
-            'image' => 'required|mimes:jpg,bmp,png',
         ]);
 
         //if validation fails
@@ -43,6 +44,11 @@ class StudentController extends Controller
         }
 
         $dataUser = collect($request)->only(User::filters())->all();
+
+        if (isset($request->image)) {
+            if (!empty($user->image)) {
+                Storage::delete("public/" . $user->image);
+            }
         $image_name = \Str::random(15);
         $file = $dataUser['image'];
         $extension = $file->getClientOriginalExtension();
@@ -54,8 +60,24 @@ class StudentController extends Controller
         );
 
         $dataUser['image'] = $uploadDoc;
+    }
+
         $user->update($dataUser);
 
-        return response()->json(['Success' => true, 'message' => 'Successfully Updated Your Profile']);
+        $myProfile = User::where('uuid', $uuid)->first();
+
+        return response()->json(['myProfile' => $myProfile,'Success' => true, 'message' => 'Successfully Updated Your Profile']);
+    }
+
+    // Untuk mengupdate komik
+    public function getMyProfile($uuid)
+    {
+        $myProfile = User::where('uuid', $uuid)->first();
+
+        if (is_null($myProfile)) {
+            return response()->json(['Failure' => true, 'message' => 'User not found']);
+        }
+
+        return response()->json(['myProfile' => $myProfile, 'Success' => true, 'message' => 'Successfully Get Your Profile Data']);
     }
 }

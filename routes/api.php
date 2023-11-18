@@ -50,6 +50,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 // User
 Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::get('get-my-profile/{uuid}', [StudentController::class, 'getMyProfile'])->middleware('allRole');
+Route::get('get-servicer', [StudentController::class, 'getServicer']);
+
 
 
 // Komik
@@ -90,6 +92,8 @@ Route::post('update-portfolio/{id}', [PortofolioController::class, 'update'])->m
 Route::delete('delete-portfolio/{id}', [PortofolioController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-portfolio/{id}', [PortofolioController::class, 'read']);
 Route::get('show-all-portfolio', [PortofolioController::class, 'getAll'])->middleware('Admin');
+Route::get('get-dataPortfolio/{user_id}', [PortofolioController::class, 'getDataPortfolio']);
+
 
 
 // Forum

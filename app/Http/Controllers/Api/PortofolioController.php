@@ -140,4 +140,19 @@ class PortofolioController extends Controller
             'data' => $data,
         ], 200);
     }
+    
+    public function getDataPortfolio($user_id){
+        $dataPortfolio = PortofolioModel::where('user_id', $user_id)->get();
+        $cekDataPortfolio = PortofolioModel::where('user_id', $user_id)->first();
+
+
+        if(is_null($cekDataPortfolio)){
+            return response()->json(['Failure'=> true, 'message'=> 'Data is empty']);
+        }
+
+        return response([
+            'message' => 'Portfolio is succesfully show',
+            'dataPortfolio' => $dataPortfolio,
+        ], 200);
+    }
 }

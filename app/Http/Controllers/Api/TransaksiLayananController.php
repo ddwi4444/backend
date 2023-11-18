@@ -7,6 +7,8 @@ use App\Models\TransaksiLayananModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
+
 
 class TransaksiLayananController extends Controller
 {
@@ -26,7 +28,6 @@ class TransaksiLayananController extends Controller
             'project_name' => 'required',
             'offering_cost' => 'required',
             'description' => 'required',
-            'storyboard' => 'mimes:jpg,bmp,png'
         ]);
 
         //if validation fails
@@ -37,11 +38,11 @@ class TransaksiLayananController extends Controller
         // Store UUID
         $get_data = TransaksiLayananModel::orderBy('created_at','DESC')->first();
         if(is_null($get_data)) {
-            $uuid = Uuid::uuid4()->getHex().'ServicesTransaction'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+            $uuid = Uuid::uuid4()->getHex().'SvcTrk'.date('ymd').'-'.sprintf('%09d', 1); // toString();
         } else {
             $find = substr($get_data->id, -9);
             $increment = $find + 1;
-            $uuid = Uuid::uuid4()->getHex().'ServicesTransaction'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+            $uuid = Uuid::uuid4()->getHex().'SvcTrk'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
         }
 
         $user_id = auth()->user()->id;

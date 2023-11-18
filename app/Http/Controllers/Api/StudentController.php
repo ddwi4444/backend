@@ -80,4 +80,16 @@ class StudentController extends Controller
 
         return response()->json(['myProfile' => $myProfile, 'Success' => true, 'message' => 'Successfully Get Your Profile Data']);
     }
+
+    // Untuk mengupdate komik
+    public function getServicer()
+    {
+        $dataServicer = User::where('is_servicer', '1')->get();
+
+        if (is_null($dataServicer)) {
+            return response()->json(['Failure' => true, 'message' => 'User servicer not found']);
+        }
+
+        return response()->json(['dataServicer' => $dataServicer, 'Success' => true, 'message' => 'Successfully Get Servicer Data']);
+    }
 }

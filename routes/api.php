@@ -132,9 +132,15 @@ Route::post('create-transaksiLayanan/{idServicer}', [TransaksiLayananController:
 Route::post('update-transkasiLayanan/{id}', [TransaksiLayananController::class, 'update'])->middleware('allRole');
 Route::delete('delete-transaksiLayanan/{id}', [TransaksiLayananController::class, 'delete'])->middleware('allRole');
 Route::post('read-transaksiLayanan/{id}', [TransaksiLayananController::class, 'read']);
+Route::get('show-all-transkasiLayanan', [TransaksiLayananController::class, 'getAll'])->middleware('Admin');
+
 
 // ReviewLayanan
 Route::post('create-reviewLayanan/{idTransaksiLayanan}', [ReviewLayananController::class, 'create'])->middleware('allRole');
 Route::post('update-reviewLayanan/{id}', [ReviewLayananController::class, 'update'])->middleware('allRole');
 Route::delete('delete-reviewLayanan/{id}', [ReviewLayananController::class, 'delete'])->middleware('allRole');
 Route::post('read-reviewLayanan/{id}', [ReviewLayananController::class, 'read']);
+Route::get('show-all-reviewLayanan/{idServicer}', [ReviewLayananController::class, 'getAll']);
+Route::get('get-reviewLayanan/{idTransaksiLayanan}', [ReviewLayananController::class, 'get_reviewLayanan'])->middleware('allRole');
+
+

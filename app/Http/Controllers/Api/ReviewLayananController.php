@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ReviewLayananModel;
-use App\Models\TransaksiLayananModel;
 use App\Models\User;
+use App\Models\TransaksiLayananModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Ramsey\Uuid\Uuid;
 
 class ReviewLayananController extends Controller
 {
@@ -114,5 +115,68 @@ class ReviewLayananController extends Controller
         $data->delete();
 
         return response()->json(['Success'=> true, 'message'=> 'ReviewLayanan Successfully Deleted']);
+    }
+
+    public function get_reviewLayanan($idTransaksiLayanan)
+    {
+        $dataReviewLayanan = ReviewLayananModel::where('transaksi_layanan_id', $idTransaksiLayanan)->first();
+
+        if (is_null($dataReviewLayanan)) {
+            return response()->json(['Failure' => true, 'message' => 'Service transaction servicer not found']);
+        }
+
+        return response()->json(['data' => $dataReviewLayanan, 'Success' => true, 'message' => 'Successfully Get Service Transaction Data']);
+    }    
+
+    public function getAll($idServicer){
+        $data = ReviewLayananModel::where('user_id_servicer', $idServicer)->get();
+
+        if ($data->isEmpty()) {
+            return response()->json(['message' => 'No service reviews found', 'data' => []], 200);
+        }
+
+        // Menghitung jumlah total rating
+        $totalRating = 0;
+
+        // Menghitung jumlah data yang ada
+        $count = $data->count();
+
+        // Memeriksa apakah ada data yang ditemukan
+        if ($count > 0) {
+            // Mengakumulasi total rating
+            foreach ($data as $review) {
+                $totalRating += $review->rating;
+            }
+
+            // Menghitung rata-rata rating
+            $rerataRating = $totalRating / $count;
+        } else {
+            // Menangani kasus jika tidak ada data yang ditemukan
+            $rerataRating = 0;
+            echo "Tidak ada data rating ditemukan.";
+        }
+    
+        $reviewers = [];
+    
+        foreach ($data as $review) {
+            $userId = $review->user_id_customer;
+        
+            // Check if the user with the current ID is not already in $reviewers
+            if (!array_key_exists($userId, $reviewers)) {
+                $dataReviewer = User::where('id', $userId)->first();
+        
+                // Check if the user is found before adding to the array
+                if ($dataReviewer) {
+                    $reviewers[$userId] = $dataReviewer;
+                }
+            }
+        }
+    
+        return response([
+            'message' => 'Service reviews are successfully shown',
+            'dataReview' => $data,
+            'dataReviewers' => $reviewers,
+            'rerataRating' => $rerataRating,
+        ], 200);
     }
 }

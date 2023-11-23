@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('uuid', 64)->unique();
             $table->string('email')->unique();
             $table->string('nama_persona')->unique();
+            $table->string('bio')->nullable();
             $table->string('password');
             $table->string('nama_OC', 100)->nullable();
             $table->string('no_tlp', 100)->nullable();

@@ -108,4 +108,14 @@ class TransaksiLayananController extends Controller
 
         return response()->json(['Success'=> true, 'message'=> 'Transaksi Layanan Successfully Deleted']);
     }
+
+    // Show all transaksi layanan
+    public function getAll(){
+        $data = TransaksiLayananModel::orderBy('created_at', 'desc')->get();
+
+        return response([
+            'message' => 'Services transaction is succesfully show',
+            'data' => $data,
+        ], 200);
+    }
 }

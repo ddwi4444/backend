@@ -23,6 +23,7 @@ class StudentController extends Controller
         $updateData = $request->all();
         $validator = Validator::make($updateData, [
             'nama_persona' =>'required',
+            'bio' => 'required',
             'umur' => 'required',
             'tanggal_lahir' => 'required',
             'zodiak' => 'required',

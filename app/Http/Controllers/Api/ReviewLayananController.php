@@ -12,10 +12,10 @@ use Ramsey\Uuid\Uuid;
 
 class ReviewLayananController extends Controller
 {
-    public function create(Request $request, $idTransaksiLayanan)
+    public function create(Request $request, $uuidTransaksiLayanan, $idTransaksiLayanan)
     {
 
-        $dataTransaksiLayanan = TransaksiLayananModel::where('id', $idTransaksiLayanan)->first();
+        $dataTransaksiLayanan = TransaksiLayananModel::where('uuid', $uuidTransaksiLayanan)->first();
 
         if(is_null($dataTransaksiLayanan)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -132,7 +132,7 @@ class ReviewLayananController extends Controller
         $data = ReviewLayananModel::where('user_id_servicer', $idServicer)->get();
 
         if ($data->isEmpty()) {
-            return response()->json(['message' => 'No service reviews found', 'data' => []], 200);
+            return response()->json(['message' => 'No service reviews found', 'dataReview' => [], 'dataReviewers' => '0', 'rerataRating' => '0']);
         }
 
         // Menghitung jumlah total rating

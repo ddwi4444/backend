@@ -118,4 +118,42 @@ class TransaksiLayananController extends Controller
             'data' => $data,
         ], 200);
     }
+
+    public function takeOrder($uuidtransaksiLayanan){
+        $data = TransaksiLayananModel::where('uuid', $uuidtransaksiLayanan)->first();
+
+    // Check if the record exists
+    if ($data) {
+        // Update the value of is_deal to 1
+        $data->update(['is_deal' => 1]);
+
+        return response([
+            'message' => 'Services transaction is successfully updated',
+            'data' => $data,
+        ], 200);
+    } else {
+        return response([
+            'message' => 'Services transaction not found',
+        ], 404);
+    }
+    }
+
+    public function doneOrder($uuidtransaksiLayanan){
+        $data = TransaksiLayananModel::where('uuid', $uuidtransaksiLayanan)->first();
+
+    // Check if the record exists
+    if ($data) {
+        // Update the value of is_deal to 1
+        $data->update(['is_done' => 1]);
+
+        return response([
+            'message' => 'Services transaction is successfully updated',
+            'data' => $data,
+        ], 200);
+    } else {
+        return response([
+            'message' => 'Services transaction not found',
+        ], 404);
+    }
+    }
 }

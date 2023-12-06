@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('transaksi_layanan', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
-            $table->string('user_id_servicer', 50)->references('id')->on('user');
-            $table->string('user_id_customer', 50)->references('id')->on('user');
+            $table->string('uuid')->unique();
+            $table->string('user_id_servicer')->references('id')->on('user');
+            $table->string('user_id_customer')->references('id')->on('user');
             $table->string('project_name');
             $table->unsignedBigInteger('offering_cost');
             $table->string('description');

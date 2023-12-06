@@ -21,28 +21,28 @@ class StudentController extends Controller
         }
 
         $updateData = $request->all();
-        $validator = Validator::make($updateData, [
-            'nama_persona' =>'required',
-            'bio' => 'required',
-            'umur' => 'required',
-            'tanggal_lahir' => 'required',
-            'zodiak' => 'required',
-            'ras' => 'required',
-            'tinggi_badan' => 'required',
-            'berat_badan' => 'required',
-            'MBTI' => 'required',
-            'hobi' => 'required',
-            'ig_acc' => 'required',
-            'like' => 'required',
-            'did_not_like' => 'required',
-            'quotes' => 'required',
-            'story_character' => 'required',
-        ]);
+        // $validator = Validator::make($updateData, [
+        //     'nama_persona' =>'required',
+        //     'bio' => 'required',
+        //     'umur' => 'required',
+        //     'tanggal_lahir' => 'required',
+        //     'zodiak' => 'required',
+        //     'ras' => 'required',
+        //     'tinggi_badan' => 'required',
+        //     'berat_badan' => 'required',
+        //     'MBTI' => 'required',
+        //     'hobi' => 'required',
+        //     'ig_acc' => 'required',
+        //     'like' => 'required',
+        //     'did_not_like' => 'required',
+        //     'quotes' => 'required',
+        //     'story_character' => 'required',
+        // ]);
 
         //if validation fails
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors(), 422);
+        // }
 
         $dataUser = collect($request)->only(User::filters())->all();
 

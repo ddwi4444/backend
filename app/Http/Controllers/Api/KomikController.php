@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\KomikModel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 use Validator;
@@ -31,13 +32,13 @@ class KomikController extends Controller
         }
 
         // Store UUID
-        $get_data = KomikModel::orderBy('created_at','DESC')->first();
-        if(is_null($get_data)) {
-            $uuid = Uuid::uuid4()->getHex().'Comic'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        $get_data = KomikModel::orderBy('created_at', 'DESC')->first();
+        if (is_null($get_data)) {
+            $uuid = Uuid::uuid4()->getHex() . 'Comic' . date('ymd') . '-' . sprintf('%09d', 1); // toString();
         } else {
             $find = substr($get_data->id, -9);
             $increment = $find + 1;
-            $uuid = Uuid::uuid4()->getHex().'Comic'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+            $uuid = Uuid::uuid4()->getHex() . 'Comic' . date('ymd') . '-' . sprintf('%09d', $increment); // toString();
         }
 
         $nama_author = auth()->user()->nama_persona;
@@ -146,12 +147,94 @@ class KomikController extends Controller
     }
 
     // Show all Komik for Admin
-    public function getAll(){
+    public function getAll()
+    {
         $data = KomikModel::orderBy('updated_at', 'desc')->get();
 
         return response([
             'message' => 'Comic is succesfully show',
             'data' => $data,
+        ], 200);
+    }
+
+    // Show all for komik in landingpage
+    public function getDataKomik()
+    {
+        $dataLatest = KomikModel::orderBy('created_at', 'desc')->take(14)->get();
+
+        $startDate = Carbon::now()->subDays(7);
+
+        $dataPopular = KomikModel::where('created_at', '>=', $startDate)
+            ->orderBy('jumlah_view', 'desc')
+            ->take(14)
+            ->get();
+
+        $today = Carbon::now()->format('Y-m-d');
+
+        $dataToday = KomikModel::whereDate('created_at', $today)
+            ->orderBy('jumlah_view', 'desc')
+            ->get();
+
+        $dataComics = KomikModel::orderBy('updated_at', 'desc')->get();
+
+        return response([
+            'message' => 'Comic is succesfully show',
+            'dataLatest' => $dataLatest,
+            'dataPopular' => $dataPopular,
+            'dataToday' => $dataToday,
+            'dataComics' => $dataComics
+        ], 200);
+    }
+
+    // Show all for komik today in landingpage
+    public function getDataKomikTodayShow()
+    {
+        $today = now()->format('Y-m-d'); // Get the current date in 'Y-m-d' format
+
+        $dataKomikTodaysShow = KomikModel::whereDate('created_at', $today)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response([
+            'message' => 'Comics for today are successfully shown',
+            'dataKomikTodaysShow' => $dataKomikTodaysShow,
+        ], 200);
+    }
+
+    public function addJumlahView($komik_uuid)
+    {
+        $data = KomikModel::where('uuid', $komik_uuid)->first();
+
+        $data->update(['jumlah_view' => $data->jumlah_view + 1]);
+
+        return response([
+            'response' => 'Comic is succesfully show',
+        ], 200);
+    }
+
+    public function getComicByCategori($category)
+    {
+        $dataKomiksByCategory = KomikModel::where('genre', $category)->get();
+        $category = $category;
+
+        return response([
+            'response' => 'Comic is succesfully show',
+            'dataKomiksByCategory' => $dataKomiksByCategory,
+            'category' => $category,
+        ], 200);
+    }
+
+    public function getDataKomikCategorysShow($category1, $category2, $category3)
+    {
+        $dataKomikCategorys1 = KomikModel::where('genre', $category1)->take(14)->get();
+        $dataKomikCategorys2 = KomikModel::where('genre', $category2)->take(14)->get();
+        $dataKomikCategorys3 = KomikModel::where('genre', $category3)->take(14)->get();
+
+        return response([
+            'response' => 'Comic is succesfully show',
+            'dataKomikCategorys1' => $dataKomikCategorys1,
+            'dataKomikCategorys2' => $dataKomikCategorys2,
+            'dataKomikCategorys3' => $dataKomikCategorys3,
         ], 200);
     }
 }

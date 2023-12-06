@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('komen', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
-            $table->string('user_id', 50)->references('id')->on('user');
+            $table->string('uuid')->unique();
+            $table->string('user_id')->references('id')->on('user');
             $table->unsignedBiginteger('sub_komik_id')->references('id')->on('sub_komik');
             $table->unsignedBiginteger('komen_parent_id')->references('id')->on('komen')->nullable();
             $table->string('isi');

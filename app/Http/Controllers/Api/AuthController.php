@@ -48,12 +48,12 @@ class AuthController extends Controller
 
         $get_data = User::orderBy('created_at','DESC')->first();
         if(is_null($get_data)) {
-            $id = 'User'.date('ymd').'-'.sprintf('%09d', 1);
+            $id = Uuid::uuid4()->getHex(). 'User'.date('ymd').'-'.sprintf('%09d', 1);
             $uuid = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', 1); // toString();
         } else {
             $find = substr($get_data->id, -9);
             $increment = $find + 1;
-            $id = 'User'.date('ymd').'-'.sprintf('%09d', $increment);
+            $id = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', $increment);
             $uuid = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
         }
 

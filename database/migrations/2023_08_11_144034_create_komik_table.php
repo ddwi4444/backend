@@ -15,9 +15,11 @@ return new class extends Migration
     {
         Schema::create('komik', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
-            $table->string('user_id', 50)->references('id')->on('user');
+            $table->string('uuid')->unique();
+            $table->string('user_id')->references('id')->on('user');
             $table->string('judul');
+            $table->string('post_by');
+            $table->unsignedBiginteger('jumlah_view')->default(0);
             $table->string('genre');
             $table->string('thumbnail');
             $table->unsignedBiginteger('jumlah_like')->nullable();

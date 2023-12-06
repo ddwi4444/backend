@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('komen_forum', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
-            $table->string('user_id', 50)->references('id')->on('user');
+            $table->string('uuid')->unique();
+            $table->string('user_id')->references('id')->on('user');
             $table->unsignedBiginteger('forum_id')->references('id')->on('forum');
             $table->unsignedBiginteger('komenForum_parent_id')->references('id')->on('komen_forum')->nullable();
             $table->string('isi');

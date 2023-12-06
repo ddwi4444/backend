@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('user_verifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('user_id', 50)->references('id')->on('user');
+            $table->string('user_id')->references('id')->on('user');
             $table->string('token');
 
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');

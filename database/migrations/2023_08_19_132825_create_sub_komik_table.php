@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('sub_komik', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
+            $table->string('uuid')->unique();
             $table->unsignedBiginteger('komik_id')->references('id')->on('komik');
-            $table->string('user_id', 50)->references('id')->on('user');
+            $table->string('user_id')->references('id')->on('user');
             $table->string('judul');
             $table->string('thumbnail');
             $table->string('content');
             $table->string('chapter')->nullable();
-            $table->unsignedBiginteger('jumlah_view')->nullable();
+            $table->unsignedBiginteger('jumlah_view')->default(0);
 	        $table->unsignedBiginteger('jumlah_like')->nullable();
             $table->string('post_by');
             $table->boolean('status')->default(0);

@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('announcement', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 64)->unique();
-            $table->string('user_id', 50)->references('id')->on('user');
+            $table->string('uuid')->unique();
+            $table->string('user_id')->references('id')->on('user');
             $table->string('post_by');
             $table->text('isi');
             $table->timestamps();

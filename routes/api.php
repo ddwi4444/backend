@@ -88,6 +88,12 @@ Route::post('update-merchandise/{id}', [MerchandiseController::class, 'update'])
 Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'])->middleware('Admin');
 Route::post('read-merchandise/{id}', [MerchandiseController::class, 'read']);
 Route::get('show-all-merchandise', [MerchandiseController::class, 'getAll'])->middleware('Admin');
+Route::get('getDataMerchandise', [MerchandiseController::class, 'getDataMerchandise']);
+Route::get('getDataOrderMerchandise/{idUser}', [MerchandiseController::class, 'getDataOrderMerchandise'])->middleware('allRole');
+Route::get('getDataDetailOrderProductsMerchandise/{uuidOrderMerchandise}', [MerchandiseController::class, 'getDataDetailOrderProductsMerchandise'])->middleware('allRole');
+Route::post('submit-products', [MerchandiseController::class, 'submitOrder'])->middleware('allRole');
+Route::post('submitFileBuktiTf/{uuidMerchandise}', [MerchandiseController::class, 'submitFileBuktiTf'])->middleware('allRole');
+Route::delete('deleteOrder/{uuidMerchandise}', [MerchandiseController::class, 'deleteOrder'])->middleware('allRole');
 
 // Portofolio
 Route::post('create-portfolio', [PortofolioController::class, 'create'])->middleware('StudentOsisAdmin');

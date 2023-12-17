@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->string('user_id')->references('id')->on('user');
-            $table->unsignedBiginteger('sub_komik_id')->references('id')->on('sub_komik');
+            $table->string('sub_komik_uuid')->references('uuid')->on('sub_komik');
             $table->unsignedBiginteger('komen_parent_id')->references('id')->on('komen')->nullable();
             $table->string('isi');
             $table->string('komen_by');
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
-            $table->foreign('sub_komik_id')->references('id')->on('sub_komik')->onDelete('cascade');
+            $table->foreign('sub_komik_uuid')->references('uuid')->on('sub_komik')->onDelete('cascade');
             $table->foreign('komen_parent_id')->references('id')->on('komen')->onDelete('cascade');
             $table->timestamps();
         });

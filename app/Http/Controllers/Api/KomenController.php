@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\KomenModel;
-use App\Models\KomikModel;
+use App\Models\SubKomikModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
@@ -12,9 +13,9 @@ use Ramsey\Uuid\Uuid;
 class KomenController extends Controller
 {
     // Membuat komen
-    public function create(Request $request, $idKomik)
+    public function create(Request $request, $idSubKomik)
     {
-        $data = KomikModel::where('id', $idKomik)->first();
+        $data = SubKomikModel::where('uuid', $idSubKomik)->first();
 
         if(is_null($data)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -48,7 +49,7 @@ class KomenController extends Controller
         $dataKomen['uuid'] = $uuid;
         $dataKomen['user_id'] = $user_id;
         $dataKomen['komen_by'] = $komen_by;
-        $dataKomen['sub_komik_id'] = $idKomik;
+        $dataKomen['sub_komik_uuid'] = $idSubKomik;
         $komen = KomenModel::create($dataKomen);
 
         return response([
@@ -58,7 +59,7 @@ class KomenController extends Controller
     }
 
     // Membuat komen balasan
-    public function createKomenBalasan(Request $request, $idKomen, $idKomik)
+    public function createKomenBalasan(Request $request, $idKomen, $idSubKomik)
     {
         $dataKomen = KomenModel::where('id', $idKomen)->first();
 
@@ -66,7 +67,7 @@ class KomenController extends Controller
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
         }
 
-        $dataKomik = KomikModel::where('id', $idKomik)->first();
+        $dataKomik = SubKomikModel::where('uuid', $idSubKomik)->first();
 
         if(is_null($dataKomik)){
             return response()->json(['Failure'=> true, 'message'=> 'Data not found']);
@@ -100,7 +101,7 @@ class KomenController extends Controller
         $dataKomen['uuid'] = $uuid;
         $dataKomen['user_id'] = $user_id;
         $dataKomen['komen_by'] = $komen_by;
-        $dataKomen['sub_komik_id'] = $idKomik;
+        $dataKomen['sub_komik_uuid'] = $idSubKomik;
         $dataKomen['komen_parent_id'] = $idKomen;
         $forum = KomenModel::create($dataKomen);
 
@@ -142,4 +143,26 @@ class KomenController extends Controller
 
         return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Deleted']);
     }
+
+    public function getKomenSubKomik($uuidSubKomik){
+        $dataKomenSubKomik = KomenModel::where('sub_komik_uuid', $uuidSubKomik)->orderBy('created_at', 'desc')->get();
+    
+        $userIds = $dataKomenSubKomik->pluck('user_id')->unique(); // Extracting unique user_ids from comments
+    
+        $dataUser = User::whereIn('id', $userIds)->orderBy('created_at', 'desc')->get();
+    
+        // Associating user data with comments
+        $dataKomenSubKomik = $dataKomenSubKomik->map(function ($comment) use ($dataUser) {
+            $comment->user = $dataUser->where('id', $comment->user_id)->first();
+            return $comment;
+        });
+    
+        return response([
+            'message' => 'Komen is successfully shown',
+            'dataKomenSubKomik' => $dataKomenSubKomik,
+            'dataUser' => $dataUser,
+        ], 200);
+    }
+    
+    
 }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('uuid')->unique();
             $table->string('user_id')->references('id')->on('user');
             $table->string('judul');
+            $table->string('slug');
+            $table->text('sinopsis');
             $table->string('post_by');
             $table->unsignedBiginteger('jumlah_view')->default(0);
             $table->string('genre');

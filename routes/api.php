@@ -49,7 +49,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
 // });
 
 // User
-Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middleware('StudentOsisAdmin');
+Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middleware('allRole');
 Route::get('get-my-profile/{uuid}', [StudentController::class, 'getMyProfile'])->middleware('allRole');
 Route::get('get-servicer', [StudentController::class, 'getServicer']);
 
@@ -67,6 +67,7 @@ Route::get('getDataKomikTodayShow', [KomikController::class, 'getDataKomikTodayS
 Route::get('getDataKomikCategorysShow/{category1}/{category2}/{category3}', [KomikController::class, 'getDataKomikCategorysShow']);
 Route::get('addJumlahView/{uuid_komik}', [KomikController::class, 'addJumlahView']);
 Route::get('getComicByCategori/{category}', [KomikController::class, 'getComicByCategori']);
+Route::get('getDataKomikSinglePost/{slug}/{uuid}', [KomikController::class, 'getDataKomikSinglePost']);
 
 // SubKomik
 Route::post('create-subkomik/{id}', [SubKomikController::class, 'create'])->middleware('StudentOsisAdmin');
@@ -74,6 +75,10 @@ Route::post('update-subkomik/{uuid}', [SubKomikController::class, 'update'])->mi
 Route::delete('delete-subkomik/{id}', [SubKomikController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-subkomik/{id}', [SubKomikController::class, 'read']);
 Route::get('show-all-subcomic/{id}', [SubKomikController::class, 'getAll'])->middleware('Admin');
+Route::get('getDataSubComic/{slug}/{uuid}', [SubKomikController::class, 'getDataSubComic']);
+Route::get('addJumlahViewSubComic/{uuidSubComic}', [SubKomikController::class, 'addJumlahView']);
+Route::get('klikLike/{uuidSubComic}/{userUUID}', [SubKomikController::class, 'klikLike'])->middleware('allRole');
+Route::get('getDataLikeSubKomik/{user_uuid}', [SubKomikController::class, 'getDataLikeSubKomik'])->middleware('allRole');
 
 // NPC
 Route::post('create-npc', [NPCController::class, 'create'])->middleware('StudentOsisAdmin');
@@ -118,11 +123,12 @@ Route::post('read-announcement/{id}', [AnnouncementController::class, 'read']);
 Route::get('show-all-announcement', [AnnouncementController::class, 'getAll'])->middleware('StudentOsisAdmin');
 
 // Komen
-Route::post('create-komen/{idKomik}', [KomenController::class, 'create'])->middleware('StudentOsisAdmin');
+Route::post('create-komen/{idSubKomik}', [KomenController::class, 'create'])->middleware('allRole');
 Route::post('create-subKomen/{idKomen}/{idKomik}', [KomenController::class, 'createKomenBalasan'])->middleware('StudentOsisAdmin');
 Route::post('update-forum/{id}', [KomenController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-forum/{id}', [KomenController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-forum/{id}', [KomenController::class, 'read']);
+Route::get('show-komenSubKomik/{uuidSubKomik}', [KomenController::class, 'getKomenSubKomik']);
 
 // Komen Forum
 Route::post('create-komenForum/{idForum}', [KomenForumController::class, 'create'])->middleware('StudentOsisAdmin');

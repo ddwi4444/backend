@@ -23,6 +23,8 @@ class KomikModel extends Model
         'uuid',
         'user_id',
         'judul',
+        'slug',
+        'sinopsis',
         'post_by',
         'genre',
         'thumbnail',

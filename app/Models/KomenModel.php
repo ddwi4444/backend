@@ -21,7 +21,7 @@ class KomenModel extends Model
     protected $fillable = [
         'uuid',
         'user_id',
-        'sub_komik_id',
+        'sub_komik_uuid',
         'komen_parent_id',
         'isi',
         'komen_by',

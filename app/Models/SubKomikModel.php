@@ -23,6 +23,7 @@ class SubKomikModel extends Model
         'komik_id',
         'user_id',
         'judul',
+        'slug',
         'thumbnail',
         'content',
         'chapter',

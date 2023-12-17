@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\KomikModel;
+use App\Models\SubKomikModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
@@ -60,6 +62,10 @@ class KomikController extends Controller
         $dataKomik['thumbnail'] = $uploadDoc;
         $dataKomik['post_by'] = $nama_author;
         $dataKomik['user_id'] = $user_id;
+
+        // Add the line to generate and store the slug
+        $dataKomik['slug'] = Str::slug($dataKomik['judul']);
+
         $komik = KomikModel::create($dataKomik);
 
         return response([
@@ -67,6 +73,7 @@ class KomikController extends Controller
             'data' => $komik,
         ], 200);
     }
+
 
     // Menampilkan komik pada single page
     public function read($uuid)
@@ -110,6 +117,12 @@ class KomikController extends Controller
 
         $dataKomik = collect($request)->only(KomikModel::filters())->all();
 
+        // Check if the judul field is being updated
+        if ($data->judul !== $request->judul) {
+            // Update the slug if judul is changed
+            $dataKomik['slug'] = Str::slug($request->judul);
+        }
+
         if (isset($request->thumbnail)) {
             if (!empty($data->thumbnail)) {
                 Storage::delete("public/" . $data->thumbnail);
@@ -131,6 +144,7 @@ class KomikController extends Controller
 
         return response()->json(['Success' => true, 'message' => 'Komik Successfully Changed']);
     }
+
 
     // Menghapus Komik
     public function delete($uuid)
@@ -235,6 +249,23 @@ class KomikController extends Controller
             'dataKomikCategorys1' => $dataKomikCategorys1,
             'dataKomikCategorys2' => $dataKomikCategorys2,
             'dataKomikCategorys3' => $dataKomikCategorys3,
+        ], 200);
+    }
+
+    public function getDataKomikSinglePost($slug, $uuid)
+    {
+        $dataComic = KomikModel::where('slug', $slug)
+        ->where('uuid', $uuid)
+        ->first();
+
+        $dataSubComics = SubKomikModel::where('komik_id', $dataComic->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+        
+        return response([
+            'response' => 'Comic is succesfully show',
+            'dataComic' => $dataComic,
+            'dataSubComics' => $dataSubComics,
         ], 200);
     }
 }

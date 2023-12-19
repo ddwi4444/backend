@@ -76,8 +76,14 @@ class KomenForumController extends Controller
     // Show all NPC for Admin
     public function getAll(){
         $dataKomenForum = komenForumModel::orderBy('created_at', 'desc')->get();
-        $dataUser = User::orderBy('created_at', 'desc')->get();
         $dataImagesKomenForum = imagesKomenForumModel::orderBy('created_at', 'desc')->get();
+
+        // Mengumpulkan semua user_id dari $data
+        $userIds = $dataKomenForum->pluck('user_id')->unique();
+    
+        // Mendapatkan data User tanpa menduplikat
+        $dataUser = User::whereIn('id', $userIds)->get();
+    
 
 
         return response([

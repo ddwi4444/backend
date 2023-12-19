@@ -121,8 +121,14 @@ class AnnouncementController extends Controller
     // Show all NPC for Admin
     public function getAll(){
         $dataAnnouncement = AnnouncementModel::orderBy('created_at', 'desc')->get();
-        $dataUser = User::orderBy('created_at', 'desc')->get();
         $dataImagesAnnouncement = imagesAnnouncementModel::orderBy('created_at', 'desc')->get();
+
+        // Mengumpulkan semua user_id dari $data
+        $userIds = $dataAnnouncement->pluck('user_id')->unique();
+    
+        // Mendapatkan data User tanpa menduplikat
+        $dataUser = User::whereIn('id', $userIds)->get();
+    
 
 
         return response([

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ForumModel;
 use App\Models\imagesForumModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Ramsey\Uuid\Uuid;
@@ -117,15 +118,22 @@ class ForumController extends Controller
         return response()->json(['Success'=> true, 'message'=> 'Forum Successfully Deleted']);
     }
 
-    // Show all Komik for Admin
     public function getAll(){
         $data = ForumModel::orderBy('updated_at', 'desc')->get();
-        $imagesForum = imagesForumModel::orderBy('updated_at', 'desc')->get();
-
+        $imagesForum = ImagesForumModel::orderBy('updated_at', 'desc')->get();
+    
+        // Mengumpulkan semua user_id dari $data
+        $userIds = $data->pluck('user_id')->unique();
+    
+        // Mendapatkan data User tanpa menduplikat
+        $userForum = User::whereIn('id', $userIds)->get();
+    
         return response([
-            'message' => 'Forum is succesfully show',
+            'message' => 'Forum is successfully shown',
             'data' => $data,
-            'imagesForum' => $imagesForum
+            'imagesForum' => $imagesForum,
+            'userForum' => $userForum,
         ], 200);
     }
+    
 }

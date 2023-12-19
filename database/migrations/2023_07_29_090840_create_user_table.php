@@ -42,6 +42,7 @@ return new class extends Migration
             $table->string('eskul')->nullable();
             $table->string('role')->default('user');
             $table->boolean('is_active')->default(1);
+            $table->bigInteger('projects')->nullable();
             $table->boolean('is_servicer')->default(0);
             $table->string('deskripsi_servicer', 100)->nullable();
             $table->timestamps();

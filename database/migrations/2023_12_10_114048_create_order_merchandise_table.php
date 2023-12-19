@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('buktiTf')->nullable();
             $table->string('noResi')->nullable();
             $table->integer('status');
+            $table->boolean('confirm_buktiTf')->default(0);
             $table->softDeletes();
 
             $table->timestamps();

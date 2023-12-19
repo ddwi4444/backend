@@ -94,11 +94,13 @@ Route::delete('delete-merchandise/{id}', [MerchandiseController::class, 'delete'
 Route::post('read-merchandise/{id}', [MerchandiseController::class, 'read']);
 Route::get('show-all-merchandise', [MerchandiseController::class, 'getAll'])->middleware('Admin');
 Route::get('getDataMerchandise', [MerchandiseController::class, 'getDataMerchandise']);
-Route::get('getDataOrderMerchandise/{idUser}', [MerchandiseController::class, 'getDataOrderMerchandise'])->middleware('allRole');
+Route::get('getDataOrderMerchandise/{uuidUser}', [MerchandiseController::class, 'getDataOrderMerchandise'])->middleware('allRole');
 Route::get('getDataDetailOrderProductsMerchandise/{uuidOrderMerchandise}', [MerchandiseController::class, 'getDataDetailOrderProductsMerchandise'])->middleware('allRole');
 Route::post('submit-products', [MerchandiseController::class, 'submitOrder'])->middleware('allRole');
 Route::post('submitFileBuktiTf/{uuidMerchandise}', [MerchandiseController::class, 'submitFileBuktiTf'])->middleware('allRole');
 Route::delete('deleteOrder/{uuidMerchandise}', [MerchandiseController::class, 'deleteOrder'])->middleware('allRole');
+Route::get('confirmPaymentMerchandise/{uuidMerchandise}', [MerchandiseController::class, 'confirmPayment'])->middleware('Admin');
+Route::post('submitAddNoResi/{uuidMerchandise}', [MerchandiseController::class, 'submitAddNoResi'])->middleware('allRole');
 
 // Portofolio
 Route::post('create-portfolio', [PortofolioController::class, 'create'])->middleware('StudentOsisAdmin');
@@ -144,8 +146,12 @@ Route::post('update-transkasiLayanan/{id}', [TransaksiLayananController::class, 
 Route::delete('delete-transaksiLayanan/{id}', [TransaksiLayananController::class, 'delete'])->middleware('allRole');
 Route::post('read-transaksiLayanan/{id}', [TransaksiLayananController::class, 'read']);
 Route::get('show-all-transkasiLayanan', [TransaksiLayananController::class, 'getAll'])->middleware('Admin');
-Route::get('takeOrder/{uuidTranksasi}', [TransaksiLayananController::class, 'takeOrder'])->middleware('allRole');
+Route::get('takeOrder/{uuidTranksasi}', [TransaksiLayananController::class, 'takedOrder'])->middleware('allRole');
+Route::get('declinedOrder/{uuidTranksasi}', [TransaksiLayananController::class, 'declinedOrder'])->middleware('allRole');
 Route::get('doneOrder/{uuidTranksasi}', [TransaksiLayananController::class, 'doneOrder'])->middleware('allRole');
+Route::get('getDataOrderService/{uuidUser}', [TransaksiLayananController::class, 'getDataOrderService'])->middleware('allRole');
+Route::post('submitFileBuktiTfService/{uuidService}', [TransaksiLayananController::class, 'submitFileBuktiTf'])->middleware('allRole');
+Route::get('confirmPaymentService/{uuidService}', [TransaksiLayananController::class, 'confirmPayment'])->middleware('Admin');
 
 // ReviewLayanan
 Route::post('create-reviewLayanan/{uuidTransaksiLayanan}/{idTransaksiLayanan}', [ReviewLayananController::class, 'create'])->middleware('allRole');

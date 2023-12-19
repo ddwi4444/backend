@@ -28,6 +28,7 @@ class TransaksiLayananController extends Controller
             'project_name' => 'required',
             'offering_cost' => 'required',
             'description' => 'required',
+            'contact_person' => 'required',
         ]);
 
         //if validation fails
@@ -122,20 +123,38 @@ class TransaksiLayananController extends Controller
     public function takeOrder($uuidtransaksiLayanan){
         $data = TransaksiLayananModel::where('uuid', $uuidtransaksiLayanan)->first();
 
-    // Check if the record exists
-    if ($data) {
-        // Update the value of is_deal to 1
-        $data->update(['is_deal' => 1]);
+        // Check if the record exists
+        if ($data) {
+            // Update the value of is_deal to 1
+            $data->update(['is_deal' => 1]);
 
-        return response([
-            'message' => 'Services transaction is successfully updated',
-            'data' => $data,
-        ], 200);
-    } else {
-        return response([
-            'message' => 'Services transaction not found',
-        ], 404);
+            return response([
+                'message' => 'Services transaction is successfully updated',
+                'data' => $data,
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Services transaction not found',
+            ], 404);
+        }
     }
+    public function declinedOrder($uuidtransaksiLayanan){
+        $data = TransaksiLayananModel::where('uuid', $uuidtransaksiLayanan)->first();
+
+        // Check if the record exists
+        if ($data) {
+            // Update the value of is_deal to 1
+            $data->update(['is_deal' => 3]);
+
+            return response([
+                'message' => 'Services transaction is successfully updated',
+                'data' => $data,
+            ], 200);
+        } else {
+            return response([
+                'message' => 'Services transaction not found',
+            ], 404);
+        }
     }
 
     public function doneOrder($uuidtransaksiLayanan){
@@ -143,8 +162,10 @@ class TransaksiLayananController extends Controller
 
     // Check if the record exists
     if ($data) {
+        $user = User::where('id', $data->user_id_servicer)->first();
         // Update the value of is_deal to 1
         $data->update(['is_done' => 1]);
+        $user->update(['projects' => $user->projects + 1]);
 
         return response([
             'message' => 'Services transaction is successfully updated',
@@ -156,4 +177,65 @@ class TransaksiLayananController extends Controller
         ], 404);
     }
     }
+
+    public function getDataOrderService($uuidUser){
+        $user = User::where('uuid', $uuidUser)->first();
+
+        if($user->is_servicer == 1){
+            $data = TransaksiLayananModel::where('user_id_servicer', $user->id)->orderBy('created_at', 'desc')->get();
+        }
+        elseif ($user->role == 'admin') {
+            $data = TransaksiLayananModel::orderBy('created_at', 'desc')->get();
+        }
+        elseif($user->is_servicer == 0){
+            $data = TransaksiLayananModel::where('user_id_customer', $user->id)->orderBy('created_at', 'desc')->get();
+        }
+        
+
+        return response([
+            'message' => 'Services transaction is succesfully show',
+            'dataServiceOrders' => $data,
+        ], 200);
+    }
+    
+    public function submitFileBuktiTf(Request $request, $uuidService)
+    {
+        $data = TransaksiLayananModel::where('uuid', $uuidService)->first();
+
+        $dataTransaksiLayanan = collect($request)->only(TransaksiLayananModel::filters())->all();
+
+        $image_name = \Str::random(15);
+        $file = $dataTransaksiLayanan['buktiTf'];
+        $extension = $file->getClientOriginalExtension();
+
+        $uploadDoc = $request->buktiTf->storeAs(
+            'buktiTf_service',
+            $image_name.'.'.$extension,
+            ['disk' => 'public']
+        );
+
+        $dataTransaksiLayanan['buktiTf'] = $uploadDoc;
+
+        $data->update($dataTransaksiLayanan);    
+
+        return response()->json(['message' => 'Order berhasil disimpan'], 200);
+    }
+
+    public function confirmPayment($uuid)
+{
+    // Find the record with the given UUID
+    $order = TransaksiLayananModel::where('uuid', $uuid)->first();
+
+    // Check if the record exists
+    if ($order) {
+        // Update the 'confirm_buktiTf' field to 1
+        $order->update(['confirm_buktiTf' => 1]);
+
+        // Return a JSON response indicating success
+        return response()->json(['success' => true, 'message' => 'Merchandise Successfully Updated']);
+    } else {
+        // Return a JSON response indicating failure (record not found)
+        return response()->json(['success' => false, 'message' => 'Merchandise not found'], 404);
+    }
+}
 }

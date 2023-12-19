@@ -60,6 +60,7 @@ class User extends Authenticatable implements JWTSubject
         'role',
         'is_active',
         'is_servicer',
+        'projects',
         'deskripsi_servicer',
     ];
 

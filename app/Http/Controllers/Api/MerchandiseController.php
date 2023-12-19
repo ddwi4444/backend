@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\imagesMerchandiseModel;
 use App\Models\MerchandiseModel;
 use App\Models\orderMerchandiseModel;
+use App\Models\User;
 use App\Models\orderProdukMerchandiseModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -178,10 +179,17 @@ class MerchandiseController extends Controller
     }
 
     // Show order merchandise
-    public function getDataOrderMerchandise($user_id)
+    public function getDataOrderMerchandise($user_uuid)
     {
-        // Assuming there's a relationship between user_id and orderMerchandiseModel
-        $dataOrderMerchandises = OrderMerchandiseModel::where('user_id', $user_id)->get();
+        $user = User::where('uuid', $user_uuid)->first();
+
+        if($user->role != 'admin'){
+            $dataOrderMerchandises = OrderMerchandiseModel::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        }
+        else{
+            $dataOrderMerchandises = OrderMerchandiseModel::orderBy('created_at', 'desc')->get();
+        }
+
 
         // Assuming there's a relationship between uuidOrderMerchandise and orderMerchandiseModel
         $dataOrderProductsMerchandise = OrderProdukMerchandiseModel::whereIn('uuidOrderMerchandise', $dataOrderMerchandises->pluck('uuid'))->get();
@@ -259,13 +267,24 @@ class MerchandiseController extends Controller
         $extension = $file->getClientOriginalExtension();
 
         $uploadDoc = $request->buktiTf->storeAs(
-            'buktiTf',
+            'buktiTf_merchandise',
             $image_name.'.'.$extension,
             ['disk' => 'public']
         );
 
         $dataMerchandise['buktiTf'] = $uploadDoc;
         $dataMerchandise['status'] = 1;
+
+        $data->update($dataMerchandise);    
+
+        return response()->json(['message' => 'Order berhasil disimpan'], 200);
+    }
+
+    public function submitAddNoResi(Request $request, $uuidMerchandise)
+    {
+        $data = orderMerchandiseModel::where('uuid', $uuidMerchandise)->first();
+
+        $dataMerchandise['noResi'] = $request->noResi;
 
         $data->update($dataMerchandise);    
 
@@ -284,4 +303,23 @@ class MerchandiseController extends Controller
 
         return response()->json(['Success' => true, 'message' => 'Merchandise Successfully Deleted']);
     }
+
+    public function confirmPayment($uuid)
+{
+    // Find the record with the given UUID
+    $order = orderMerchandiseModel::where('uuid', $uuid)->first();
+
+    // Check if the record exists
+    if ($order) {
+        // Update the 'confirm_buktiTf' field to 1
+        $order->update(['confirm_buktiTf' => 1]);
+
+        // Return a JSON response indicating success
+        return response()->json(['success' => true, 'message' => 'Merchandise Successfully Updated']);
+    } else {
+        // Return a JSON response indicating failure (record not found)
+        return response()->json(['success' => false, 'message' => 'Merchandise not found'], 404);
+    }
+}
+
 }

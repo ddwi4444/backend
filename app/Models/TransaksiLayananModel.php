@@ -21,9 +21,11 @@ class TransaksiLayananModel extends Model
         'offering_cost',
         'description',
         'storyboard',
-        'bukti_transaksi',
+        'contact_person',
+        'buktiTf',
         'is_deal',
-        'is_done'
+        'is_done',
+        'confirm_buktiTf',
     ];
 
     public static function filters(){

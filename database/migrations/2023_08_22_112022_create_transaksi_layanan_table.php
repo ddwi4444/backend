@@ -23,9 +23,11 @@ return new class extends Migration
             $table->string('description');
             $table->string('customer_name');
             $table->string('storyboard')->nullable();
-            $table->string('bukti_transaksi')->nullable();
-            $table->boolean('is_deal')->default(0);
+            $table->string('contact_person');
+            $table->string('buktiTf')->nullable();
+            $table->tinyInteger('is_deal')->default(0);
             $table->boolean('is_done')->default(0);
+            $table->boolean('confirm_buktiTf')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

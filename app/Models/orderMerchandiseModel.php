@@ -22,7 +22,8 @@ class orderMerchandiseModel extends Model
         'totalPrice',
         'buktiTf',
         'noResi',
-        'status'
+        'status',
+        'confirm_buktiTf'
     ];
 
     public static function filters(){

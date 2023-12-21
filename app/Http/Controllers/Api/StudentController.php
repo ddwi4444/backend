@@ -50,24 +50,24 @@ class StudentController extends Controller
             if (!empty($user->image)) {
                 Storage::delete("public/" . $user->image);
             }
-        $image_name = \Str::random(15);
-        $file = $dataUser['image'];
-        $extension = $file->getClientOriginalExtension();
+            $image_name = \Str::random(15);
+            $file = $dataUser['image'];
+            $extension = $file->getClientOriginalExtension();
 
-        $uploadDoc = $request->image->storeAs(
-            'user_image',
-            $image_name . '.' . $extension,
-            ['disk' => 'public']
-        );
+            $uploadDoc = $request->image->storeAs(
+                'user_image',
+                $image_name . '.' . $extension,
+                ['disk' => 'public']
+            );
 
-        $dataUser['image'] = $uploadDoc;
-    }
+            $dataUser['image'] = $uploadDoc;
+        }
 
         $user->update($dataUser);
 
         $myProfile = User::where('uuid', $uuid)->first();
 
-        return response()->json(['myProfile' => $myProfile,'Success' => true, 'message' => 'Successfully Updated Your Profile']);
+        return response()->json(['myProfile' => $myProfile, 'Success' => true, 'message' => 'Successfully Updated Your Profile']);
     }
 
     // Untuk mengupdate komik
@@ -92,5 +92,31 @@ class StudentController extends Controller
         }
 
         return response()->json(['dataServicer' => $dataServicer, 'Success' => true, 'message' => 'Successfully Get Servicer Data']);
+    }
+
+    public function getDataStudents()
+    {
+        $dataStudents = User::orderBy('created_at', 'DESC')
+        ->where('role', '!=', 'admin')
+        ->select('nama_persona', 'bio', 'image',
+        'ig_acc','umur',
+        'tanggal_lahir',
+        'zodiak',
+        'ras',
+        'tinggi_badan',
+        'berat_badan',
+        'MBTI',
+        'hobi',
+        'like',
+        'did_not_like',
+        'quotes',
+        'story_character',
+        'role',) // Replace 'column1', 'column2', 'column3' with the columns you want
+        ->get();
+
+        return response()->json([
+        'dataStudents' => $dataStudents, 
+        'Success' => true, 
+        'message' => 'Successfully Get Servicer Data']);
     }
 }

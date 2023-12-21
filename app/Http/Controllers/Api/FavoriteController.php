@@ -21,14 +21,21 @@ class FavoriteController extends Controller
                 'user_uuid' => $uuidUser,
                 // Other fields you may want to set
             ]);
+            $iyaFavorite = 1;
 
             // You can also do something after creating the record, if needed
         } else {
             // Data already exists, delete the existing record
             $data->delete();
+            $iyaFavorite = 0;
 
             // You can also do something after deleting the record, if needed
         }
+
+        return response([
+            'message' => 'Favorite comics is succesfully show',
+            'iyaFavorite' => $iyaFavorite,
+        ], 200);
     }
 
     public function getDataKomikFavorite($user_uuid)

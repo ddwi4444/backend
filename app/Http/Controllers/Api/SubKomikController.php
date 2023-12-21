@@ -251,6 +251,8 @@ class SubKomikController extends Controller
             $dataJumlahLike = SubKomikModel::where('uuid', $uuidSubKomik)->first();
             $dataJumlahLike->update(['jumlah_like' => $dataJumlahLike->jumlah_like + 1]);
 
+            $iyaLike = 1;
+
             // You can also do something after creating the record, if needed
         } else {
             $dataJumlahLike = SubKomikModel::where('uuid', $uuidSubKomik)->first();
@@ -258,8 +260,14 @@ class SubKomikController extends Controller
             // Data already exists, delete the existing record
             $data->delete();
 
+            $iyaLike = 0;
+
             // You can also do something after deleting the record, if needed
         }
+
+        return response([
+            'iyaLike' => $iyaLike,
+        ], 200);
     }
 
     public function getDataLikeSubKomik($user_uuid)

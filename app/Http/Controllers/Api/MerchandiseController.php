@@ -300,8 +300,6 @@ class MerchandiseController extends Controller
         }
 
         $data->delete();
-
-        return response()->json(['Success' => true, 'message' => 'Merchandise Successfully Deleted']);
     }
 
     public function confirmPayment($uuid)

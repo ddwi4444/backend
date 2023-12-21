@@ -152,4 +152,15 @@ class NPCController extends Controller
             'data' => $data,
         ], 200);
     }
+
+    public function getAllForAbout(){
+        $data = NPCModel::orderBy('updated_at', 'desc')
+        ->select('npc_name', 'npc_profile', 'nama_author', 'npc_story', 'image_npc') // Replace 'column1', 'column2', 'column3' with the columns you want
+        ->get();
+
+        return response([
+            'message' => 'NPC is succesfully show',
+            'data' => $data,
+        ], 200);
+    }
 }

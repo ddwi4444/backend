@@ -98,114 +98,116 @@ class StudentController extends Controller
     public function getDataStudents()
     {
         $dataStudents = User::orderBy('created_at', 'DESC')
-        ->where('role', '!=', 'admin')
-        ->select('nama_persona', 'bio', 'image',
-        'ig_acc','umur',
-        'tanggal_lahir',
-        'zodiak',
-        'ras',
-        'tinggi_badan',
-        'berat_badan',
-        'MBTI',
-        'hobi',
-        'like',
-        'did_not_like',
-        'quotes',
-        'story_character',
-        'role',) // Replace 'column1', 'column2', 'column3' with the columns you want
-        ->get();
+            ->where('role', '!=', 'admin')
+            ->select(
+                'nama_persona',
+                'bio',
+                'image',
+                'ig_acc',
+                'umur',
+                'tanggal_lahir',
+                'zodiak',
+                'ras',
+                'tinggi_badan',
+                'berat_badan',
+                'MBTI',
+                'hobi',
+                'like',
+                'did_not_like',
+                'quotes',
+                'story_character',
+                'role',
+            ) // Replace 'column1', 'column2', 'column3' with the columns you want
+            ->get();
 
         return response()->json([
-        'dataStudents' => $dataStudents, 
-        'Success' => true, 
-        'message' => 'Successfully Get Servicer Data']);
+            'dataStudents' => $dataStudents,
+            'Success' => true,
+            'message' => 'Successfully Get Servicer Data'
+        ]);
     }
 
     public function getDataUser($admin_uuid)
     {
         $user = User::where('uuid', $admin_uuid)->first();
 
-        if($user->role == 'admin'){
+        if ($user->role == 'admin') {
             $dataUser = User::orderBy('created_at', 'DESC')
-            ->where('role', '!=', 'admin')
-            ->select('uuid', 'image', 'nama_persona', 'role', 'is_active', 'is_servicer', 'created_at') // Replace 'column1', 'column2', 'column3' with the columns you want
-            ->get();
-        }        
+                ->where('role', '!=', 'admin')
+                ->select('uuid', 'image', 'nama_persona', 'role', 'is_active', 'is_servicer', 'created_at') // Replace 'column1', 'column2', 'column3' with the columns you want
+                ->get();
+        }
 
         return response()->json([
-        'data' => $dataUser, 
-        'Success' => true, 
-        'message' => 'Successfully Get Servicer Data']);
+            'data' => $dataUser,
+            'Success' => true,
+            'message' => 'Successfully Get Servicer Data'
+        ]);
     }
 
     public function editDataUser(Request $request, $admin_uuid)
-{
-    $user = User::where('uuid', $admin_uuid)->first();
+    {
+        $user = User::where('uuid', $admin_uuid)->first();
 
-    // Ensure the user exists
-    if (!$user) {
+        // Ensure the user exists
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ]);
+        }
+
+        Log::info($request->all());
+
+
+        $role = ""; // Initialize $role variable
+
+        if ($request->role == "Student") {
+            $role = "student";
+        } else if ($request->role == "Osis") {
+            $role = "osis";
+        } else if ($request->role == "User") {
+            $role = "user";
+        }
+
+        $is_servicer = ($request->is_servicer == "Servicer") ? 1 : 0;
+
+        $user->update([
+            'role' => $role,
+            'is_servicer' => $is_servicer
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'User not found'
+            'role' => $request->roles,
+            'success' => true,
+            'message' => 'Successfully updated user data'
         ]);
     }
 
-    Log::info($request->all());
+    public function userActive($uuidUser)
+    {
+        $user = User::where('uuid', $uuidUser)->first();
 
+        // Ensure the user exists
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ]);
+        }
 
-    $role = ""; // Initialize $role variable
+        if ($user->is_active == 1) {
+            $user->update(['is_active' => 0]);
+            $isActive = 0;
+        } else {
+            $isActive = 1;
+            $user->update(['is_active' => 1]);
+        }
 
-    if($request->role == "Student"){
-        $role = "student";
-    }
-    else if($request->role == "Osis"){
-        $role = "osis";
-    }
-    else if($request->role == "User"){
-        $role = "user";
-    }
-
-    $is_servicer = ($request->is_servicer == "Servicer") ? 1 : 0;
-
-    $user->update([
-        'role' => $role,
-        'is_servicer' => $is_servicer
-    ]);
-
-    return response()->json([
-        'role' => $request->roles,
-        'success' => true,
-        'message' => 'Successfully updated user data'
-    ]);
-}
-
-public function userActive($uuidUser)
-{
-    $user = User::where('uuid', $uuidUser)->first();
-
-    // Ensure the user exists
-    if (!$user) {
         return response()->json([
-            'success' => false,
-            'message' => 'User not found'
+            'isActive' => $isActive,
+            'success' => true,
+            'message' => 'Successfully updated user data'
         ]);
     }
-
-    if($user->is_active == 1){
-        $user->update(['is_active' => 0]);
-        $isActive = 0;
-    }
-    else{
-        $isActive = 1;
-        $user->update(['is_active' => 1]);
-    }
-
-    return response()->json([
-        'isActive' => $isActive,
-        'success' => true,
-        'message' => 'Successfully updated user data'
-    ]);
-}
-
-
 }

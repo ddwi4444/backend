@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('uuid')->unique();
             $table->string('user_id')->references('id')->on('user');
             $table->string('thumbnail');
+            $table->string('porto_by');
             $table->string('link')->nullable();
             $table->timestamps();
             $table->softDeletes();

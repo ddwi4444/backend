@@ -53,13 +53,17 @@ Route::post('update-user/{uuid}', [StudentController::class, 'update'])->middlew
 Route::get('get-my-profile/{uuid}', [StudentController::class, 'getMyProfile'])->middleware('allRole');
 Route::get('get-servicer', [StudentController::class, 'getServicer']);
 Route::get('getDataStudents', [StudentController::class, 'getDataStudents']);
+Route::get('getDataUser/{uuidAdmin}', [StudentController::class, 'getDataUser'])->middleware('Admin');
+Route::post('editDataUser/{uuidUser}', [StudentController::class, 'editDataUser'])->middleware('Admin');
+Route::get('userActive/{uuidUser}', [StudentController::class, 'userActive'])->middleware('Admin');
+
 
 // Komik
 Route::post('create-komik', [KomikController::class, 'create'])->middleware('StudentOsisAdmin');
 Route::post('update-komik/{id}', [KomikController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-komik/{id}', [KomikController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-komik/{id}', [KomikController::class, 'read']);
-Route::get('show-all-comic', [KomikController::class, 'getAll'])->middleware('Admin');
+Route::get('show-all-comic/{user_id}', [KomikController::class, 'getAll'])->middleware('StudentOsisAdmin');
 Route::get('getDataKomik', [KomikController::class, 'getDataKomik']);
 Route::get('getDataKomikFavorite/{user_uuid}', [FavoriteController::class, 'getDataKomikFavorite'])->middleware('allRole');
 Route::get('klikFavorite/{uuidKomik}/{uuidUser}', [FavoriteController::class, 'klikFavorite'])->middleware('allRole');
@@ -69,13 +73,14 @@ Route::get('getDataKomikCategorysShow/{category1}/{category2}/{category3}', [Kom
 Route::get('addJumlahView/{uuid_komik}', [KomikController::class, 'addJumlahView']);
 Route::get('getComicByCategori/{category}', [KomikController::class, 'getComicByCategori']);
 Route::get('getDataKomikSinglePost/{slug}/{uuid}', [KomikController::class, 'getDataKomikSinglePost']);
+Route::get('editStatusKomik/{uuid}', [KomikController::class, 'editStatusKomik'])->middleware('Admin');
 
 // SubKomik
 Route::post('create-subkomik/{id}', [SubKomikController::class, 'create'])->middleware('StudentOsisAdmin');
 Route::post('update-subkomik/{uuid}', [SubKomikController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-subkomik/{id}', [SubKomikController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-subkomik/{id}', [SubKomikController::class, 'read']);
-Route::get('show-all-subcomic/{id}', [SubKomikController::class, 'getAll'])->middleware('Admin');
+Route::get('show-all-subcomic/{id}/{user_id}', [SubKomikController::class, 'getAll'])->middleware('StudentOsisAdmin');
 Route::get('getDataSubComic/{slug}/{uuid}', [SubKomikController::class, 'getDataSubComic']);
 Route::get('addJumlahViewSubComic/{uuidSubComic}', [SubKomikController::class, 'addJumlahView']);
 Route::get('klikLike/{uuidSubComic}/{userUUID}', [SubKomikController::class, 'klikLike'])->middleware('allRole');
@@ -86,7 +91,7 @@ Route::post('create-npc', [NPCController::class, 'create'])->middleware('Student
 Route::post('update-npc/{uuid}', [NPCController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-npc/{uuid}', [NPCController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-npc/{uuid}', [NPCController::class, 'read']);
-Route::get('show-all-npc', [NPCController::class, 'getAll'])->middleware('Admin');
+Route::get('show-all-npc/{user_id}', [NPCController::class, 'getAll'])->middleware('StudentOsisAdmin');
 Route::get('show-all-npc-about-haf', [NPCController::class, 'getAllForAbout']);
 
 
@@ -110,7 +115,7 @@ Route::post('create-portfolio', [PortofolioController::class, 'create'])->middle
 Route::post('update-portfolio/{id}', [PortofolioController::class, 'update'])->middleware('StudentOsisAdmin');
 Route::delete('delete-portfolio/{id}', [PortofolioController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-portfolio/{id}', [PortofolioController::class, 'read']);
-Route::get('show-all-portfolio', [PortofolioController::class, 'getAll'])->middleware('Admin');
+Route::get('show-all-portfolio/{user_id}', [PortofolioController::class, 'getAll'])->middleware('StudentOsisAdmin');
 Route::get('get-dataPortfolio/{user_id}', [PortofolioController::class, 'getDataPortfolio']);
 
 // Forum
@@ -131,7 +136,7 @@ Route::get('show-all-announcement', [AnnouncementController::class, 'getAll'])->
 Route::post('create-komen/{idSubKomik}', [KomenController::class, 'create'])->middleware('allRole');
 Route::post('create-subKomen/{idKomen}/{idKomik}', [KomenController::class, 'createKomenBalasan'])->middleware('StudentOsisAdmin');
 Route::post('update-forum/{id}', [KomenController::class, 'update'])->middleware('StudentOsisAdmin');
-Route::delete('delete-forum/{id}', [KomenController::class, 'delete'])->middleware('StudentOsisAdmin');
+Route::delete('delete-komenSubKomik/{uuid}', [KomenController::class, 'delete'])->middleware('StudentOsisAdmin');
 Route::post('read-forum/{id}', [KomenController::class, 'read']);
 Route::get('show-komenSubKomik/{uuidSubKomik}', [KomenController::class, 'getKomenSubKomik']);
 

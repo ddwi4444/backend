@@ -247,9 +247,18 @@ class MerchandiseController extends Controller
             $productData['UUIDProduk'] = $productData['uuidProduct'];
             $productData['quantity'] = $productData['totalPcsProduct'];
             $productData['notes'] = $productData['notesProduct'];
-
+        
+            $dataProduct = MerchandiseModel::where('uuid', $productData['uuidProduct'])->first();
+        
             // Assuming 'orderProdukMerchandiseModel' is the Eloquent model for your database table
             orderProdukMerchandiseModel::create($productData);
+        
+            // Update stock if $dataProduct is found
+            if ($dataProduct) {
+                $dataProduct->update([
+                    'stok' => $dataProduct->stok - $productData['quantity'],
+                ]);
+            }
         }
 
 

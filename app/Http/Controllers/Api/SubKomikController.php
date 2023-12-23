@@ -18,9 +18,9 @@ class SubKomikController extends Controller
     // Untuk membuat komik
     public function create(Request $request, $id)
     {
-        $dataKomik = KomikModel::where('id', $id)->first();
+        $dataKomikPusat = KomikModel::where('id', $id)->first();
 
-        if (is_null($dataKomik)) {
+        if (is_null($dataKomikPusat)) {
             return response()->json(['Failure' => true, 'message' => 'Data not found']);
         }
 
@@ -89,6 +89,7 @@ class SubKomikController extends Controller
         $dataKomik['komik_id'] = $komik_id;
 
         $komik = SubKomikModel::create($dataKomik);
+        $dataKomikPusat->update(['status' => 1]);
 
         return response([
             'message' => 'Komik Successfully Added',
@@ -200,11 +201,21 @@ class SubKomikController extends Controller
     }
 
     // Show all Komik for Admin
-    public function getAll($id)
+    public function getAll($id, $user_id)
     {
-        $data = SubKomikModel::where('komik_id', $id)
+
+        $user = User::where('id', $user_id)->first();
+
+        if($user->role == 'admin'){
+            $data = SubKomikModel::where('komik_id', $id)
             ->orderBy('created_at', 'desc')
             ->get();
+        }
+        else if($user->role == 'student' || $user->role == 'osis'){
+            $data = SubKomikModel::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        }
+
+        
 
         return response([
             'message' => 'Sub Comic is succesfully show',

@@ -160,10 +160,34 @@ class KomikController extends Controller
         return response()->json(['Success' => true, 'message' => 'Komik Successfully Deleted']);
     }
 
-    // Show all Komik for Admin
-    public function getAll()
+    public function editStatusKomik($uuid)
     {
-        $data = KomikModel::orderBy('updated_at', 'desc')->get();
+        $data = KomikModel::where('uuid', $uuid)->first();
+
+        if ($data->status == 3) {
+            $data->update(['status' => 1]);
+            $isSuspen = 0;
+        }
+        else {
+            $data->update(['status' => 3]);
+            $isSuspen = 1;
+        }
+
+        return response()->json(['Success' => true, 'message' => 'Komik Successfully Deleted', 'isSuspen' => $isSuspen]);
+    }
+
+    // Show all Komik for Admin
+    public function getAll($user_id)
+    {
+        $user = User::where('id', $user_id)->first();
+
+        if($user->role == 'admin'){
+            $data = KomikModel::orderBy('created_at', 'desc')->get();
+        }
+        else if($user->role == 'student' || $user->role == 'osis'){
+            $data = KomikModel::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        }
+
 
         return response([
             'message' => 'Comic is succesfully show',
@@ -174,22 +198,22 @@ class KomikController extends Controller
     // Show all for komik in landingpage
     public function getDataKomik()
     {
-        $dataLatest = KomikModel::orderBy('created_at', 'desc')->take(14)->get();
+        $dataLatest = KomikModel::orderBy('created_at', 'desc')->where('status', 1)->take(14)->get();
 
         $startDate = Carbon::now()->subDays(7);
 
-        $dataPopular = KomikModel::where('created_at', '>=', $startDate)
+        $dataPopular = KomikModel::where('created_at', '>=', $startDate)->where('status', 1)
             ->orderBy('jumlah_view', 'desc')
             ->take(14)
             ->get();
 
         $today = Carbon::now()->format('Y-m-d');
 
-        $dataToday = KomikModel::whereDate('created_at', $today)
+        $dataToday = KomikModel::whereDate('created_at', $today)->where('status', 1)
             ->orderBy('jumlah_view', 'desc')
             ->get();
 
-        $dataComics = KomikModel::orderBy('updated_at', 'desc')->get();
+        $dataComics = KomikModel::orderBy('updated_at', 'desc')->where('status', 1)->get();
 
         return response([
             'message' => 'Comic is succesfully show',
@@ -205,7 +229,7 @@ class KomikController extends Controller
     {
         $today = now()->format('Y-m-d'); // Get the current date in 'Y-m-d' format
 
-        $dataKomikTodaysShow = KomikModel::whereDate('created_at', $today)
+        $dataKomikTodaysShow = KomikModel::whereDate('created_at', $today)->where('status', 1)
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -228,7 +252,7 @@ class KomikController extends Controller
 
     public function getComicByCategori($category)
     {
-        $dataKomiksByCategory = KomikModel::where('genre', $category)->get();
+        $dataKomiksByCategory = KomikModel::where('genre', $category)->where('status', 1)->get();
         $category = $category;
 
         return response([
@@ -240,9 +264,9 @@ class KomikController extends Controller
 
     public function getDataKomikCategorysShow($category1, $category2, $category3)
     {
-        $dataKomikCategorys1 = KomikModel::where('genre', $category1)->take(14)->get();
-        $dataKomikCategorys2 = KomikModel::where('genre', $category2)->take(14)->get();
-        $dataKomikCategorys3 = KomikModel::where('genre', $category3)->take(14)->get();
+        $dataKomikCategorys1 = KomikModel::where('genre', $category1)->where('status', 1)->take(14)->get();
+        $dataKomikCategorys2 = KomikModel::where('genre', $category2)->where('status', 1)->take(14)->get();
+        $dataKomikCategorys3 = KomikModel::where('genre', $category3)->where('status', 1)->take(14)->get();
 
         return response([
             'response' => 'Comic is succesfully show',

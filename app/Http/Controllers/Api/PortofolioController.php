@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\PortofolioModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
@@ -35,6 +36,7 @@ class PortofolioController extends Controller
         } 
 
         $user_id = auth()->user()->id;
+        $porto_by = auth()->user()->nama_persona;
 
         $dataPortofolio = collect($request)->only(PortofolioModel::filters())->all();
 
@@ -51,6 +53,8 @@ class PortofolioController extends Controller
         $dataPortofolio['uuid'] = $uuid;
         $dataPortofolio['thumbnail'] = $uploadDoc;
         $dataPortofolio['user_id'] = $user_id;
+        $dataPortofolio['porto_by'] = $porto_by;
+
 
         $portofolio = PortofolioModel::create($dataPortofolio);
 
@@ -132,8 +136,18 @@ class PortofolioController extends Controller
     }
 
     // Show all NPC for Admin
-    public function getAll(){
-        $data = PortofolioModel::orderBy('created_at', 'desc')->get();
+    public function getAll($user_id){
+
+        $user = User::where('id', $user_id)->first();
+
+        if($user->role == 'admin'){
+            $data = PortofolioModel::orderBy('created_at', 'desc')->get();
+        }
+        else if($user->role == 'student' || $user->role == 'osis'){
+            $data = PortofolioModel::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        }
+
+
 
         return response([
             'message' => 'Portfolio is succesfully show',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -119,4 +120,92 @@ class StudentController extends Controller
         'Success' => true, 
         'message' => 'Successfully Get Servicer Data']);
     }
+
+    public function getDataUser($admin_uuid)
+    {
+        $user = User::where('uuid', $admin_uuid)->first();
+
+        if($user->role == 'admin'){
+            $dataUser = User::orderBy('created_at', 'DESC')
+            ->where('role', '!=', 'admin')
+            ->select('uuid', 'image', 'nama_persona', 'role', 'is_active', 'is_servicer', 'created_at') // Replace 'column1', 'column2', 'column3' with the columns you want
+            ->get();
+        }        
+
+        return response()->json([
+        'data' => $dataUser, 
+        'Success' => true, 
+        'message' => 'Successfully Get Servicer Data']);
+    }
+
+    public function editDataUser(Request $request, $admin_uuid)
+{
+    $user = User::where('uuid', $admin_uuid)->first();
+
+    // Ensure the user exists
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found'
+        ]);
+    }
+
+    Log::info($request->all());
+
+
+    $role = ""; // Initialize $role variable
+
+    if($request->role == "Student"){
+        $role = "student";
+    }
+    else if($request->role == "Osis"){
+        $role = "osis";
+    }
+    else if($request->role == "User"){
+        $role = "user";
+    }
+
+    $is_servicer = ($request->is_servicer == "Servicer") ? 1 : 0;
+
+    $user->update([
+        'role' => $role,
+        'is_servicer' => $is_servicer
+    ]);
+
+    return response()->json([
+        'role' => $request->roles,
+        'success' => true,
+        'message' => 'Successfully updated user data'
+    ]);
+}
+
+public function userActive($uuidUser)
+{
+    $user = User::where('uuid', $uuidUser)->first();
+
+    // Ensure the user exists
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found'
+        ]);
+    }
+
+    if($user->is_active == 1){
+        $user->update(['is_active' => 0]);
+        $isActive = 0;
+    }
+    else{
+        $isActive = 1;
+        $user->update(['is_active' => 1]);
+    }
+
+    return response()->json([
+        'isActive' => $isActive,
+        'success' => true,
+        'message' => 'Successfully updated user data'
+    ]);
+}
+
+
 }

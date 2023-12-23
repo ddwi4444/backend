@@ -17,6 +17,7 @@ class PortofolioModel extends Model
         'uuid',
         'user_id',
         'thumbnail',
+        'porto_by',
         'link',
     ];
 

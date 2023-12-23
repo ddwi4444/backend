@@ -144,8 +144,16 @@ class NPCController extends Controller
     }
 
     // Show all NPC for Admin
-    public function getAll(){
-        $data = NPCModel::orderBy('updated_at', 'desc')->get();
+    public function getAll($user_id){
+        $user = User::where('id', $user_id)->first();
+
+        if($user->role == 'admin'){
+            $data = NPCModel::orderBy('created_at', 'desc')->get();
+        }
+        else if($user->role == 'student' || $user->role == 'osis'){
+            $data = NPCModel::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+        }
+        
 
         return response([
             'message' => 'NPC is succesfully show',

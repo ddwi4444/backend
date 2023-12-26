@@ -212,7 +212,7 @@ class SubKomikController extends Controller
             ->get();
         }
         else if($user->role == 'student' || $user->role == 'osis'){
-            $data = SubKomikModel::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
+            $data = SubKomikModel::where('user_id', $user->id)->where('komik_id', $id)->orderBy('created_at', 'desc')->get();
         }
 
         

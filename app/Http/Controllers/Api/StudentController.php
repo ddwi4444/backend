@@ -164,7 +164,7 @@ class StudentController extends Controller
 
         if ($request->role == "Student") {
             $role = "student";
-        } else if ($request->role == "Osis") {
+        } else if ($request->role == "Council") {
             $role = "osis";
         } else if ($request->role == "User") {
             $role = "user";

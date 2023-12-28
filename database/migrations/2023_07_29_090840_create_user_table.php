@@ -45,6 +45,7 @@ return new class extends Migration
             $table->bigInteger('projects')->nullable();
             $table->boolean('is_servicer')->default(0);
             $table->string('deskripsi_servicer', 100)->nullable();
+            $table->string('userToken');
             $table->timestamps();
             $table->softDeletes();
         });

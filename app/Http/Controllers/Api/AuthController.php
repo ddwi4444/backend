@@ -36,52 +36,56 @@ class AuthController extends Controller
         //set validation
         $validator = Validator::make(request()->all(), [
             'email'     => 'required|email|unique:users',
-            'nama_persona'     => 'required',
+            'nama_persona'     => 'required:unique',
             'password'  => 'required|min:8',
         ]);
 
-        
+
         //if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $get_data = User::orderBy('created_at','DESC')->first();
-        if(is_null($get_data)) {
-            $id = Uuid::uuid4()->getHex(). 'User'.date('ymd').'-'.sprintf('%09d', 1);
-            $uuid = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', 1); // toString();
+        $get_data = User::orderBy('created_at', 'DESC')->first();
+        if (is_null($get_data)) {
+            $id = Uuid::uuid4()->getHex() . 'User' . date('ymd') . '-' . sprintf('%09d', 1);
+            $uuid = Uuid::uuid4()->getHex() . 'User' . date('ymd') . '-' . sprintf('%09d', 1); // toString();
+            $tokenUser = Uuid::uuid4()->getHex() . 'TokenUser' . date('ymd'); // toString();
         } else {
             $find = substr($get_data->id, -9);
             $increment = $find + 1;
-            $id = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', $increment);
-            $uuid = Uuid::uuid4()->getHex().'User'.date('ymd').'-'.sprintf('%09d', $increment); // toString();
+            $id = Uuid::uuid4()->getHex() . 'User' . date('ymd') . '-' . sprintf('%09d', $increment);
+            $uuid = Uuid::uuid4()->getHex() . 'User' . date('ymd') . '-' . sprintf('%09d', $increment); // toString();
+            $tokenUser = Uuid::uuid4()->getHex() . 'TokenUser' . date('ymd'); // toString();
         }
 
         $email = request('email');
         $nama_persona = request('nama_persona');
-        
+
 
         $user = User::create([
             'uuid' => $uuid,
             'id'     => $id,
             'email'     => request('email'),
+            'userToken' => $tokenUser,
             'nama_persona'     => request('nama_persona'),
             'password'  => Hash::make(request('password')),
         ]);
 
         $verification_code = Str::random(30); //Generate verification code
-        DB::table('user_verifications')->insert(['user_id'=>$user->id,'token'=>$verification_code]);
+        DB::table('user_verifications')->insert(['user_id' => $user->id, 'token' => $verification_code]);
 
-            $this->sendEmail($email, $verification_code, $nama_persona);
+        $this->sendEmail($email, $verification_code, $nama_persona);
 
-        return response()->json(['success'=> true, 'message'=> 'Thanks for signing up! Please check your email to complete your registration.']);
+        return response()->json(['success' => true, 'message' => 'Thanks for signing up! Please check your email to complete your registration.']);
     }
 
     // TO send email
-    public function sendEmail($email, $verification_code, $nama_persona){
+    public function sendEmail($email, $verification_code, $nama_persona)
+    {
         $mailData = [
             "title" => "Register Email Verifikasi",
-            "nama_persona" => "Hello!, ".$nama_persona,
+            "nama_persona" => "Hello!, " . $nama_persona,
             "body1" => "Thank you for creating an account with us.",
             "body2" => "Please click on the link below or copy it into the address bar of your browser to confirm your email address : ",
             "verification_code" => $verification_code
@@ -96,32 +100,31 @@ class AuthController extends Controller
     * @param Request $request
     * @return \Illuminate\Http\JsonResponse
     */
-   public function verifyUser($verification_code)
-   {
-       $check = DB::table('user_verifications')->where('token',$verification_code)->first();
+    public function verifyUser($verification_code)
+    {
+        $check = DB::table('user_verifications')->where('token', $verification_code)->first();
 
-       if(!is_null($check)){
-           $user = User::find($check->user_id);
+        if (!is_null($check)) {
+            $user = User::find($check->user_id);
 
-           if($user->is_verified == 1){
-               return response()->json([
-                   'success'=> true,
-                   'message'=> 'Account already verified..'
-               ]);
-           }
+            if ($user->is_verified == 1) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Account already verified..'
+                ]);
+            }
 
-           $user->update(['is_verified' => 1]);
-           DB::table('user_verifications')->where('token',$verification_code)->delete();
+            $user->update(['is_verified' => 1]);
+            DB::table('user_verifications')->where('token', $verification_code)->delete();
 
-           return response()->json([
-               'success'=> true,
-               'message'=> 'You have successfully verified your email address.'
-           ]);
-       }
+            return response()->json([
+                'success' => true,
+                'message' => 'You have successfully verified your email address.'
+            ]);
+        }
 
-       return response()->json(['success'=> false, 'error'=> "Verification code is invalid."]);
-
-   }
+        return response()->json(['success' => false, 'error' => "Verification code is invalid."]);
+    }
 
     /****
      * Get a JWT via given credentials.
@@ -213,7 +216,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             $error_message = "Your email address was not found.";
-            return response()->json(['success' => false, 'error' => ['email'=> $error_message]], 401);
+            return response()->json(['success' => false, 'error' => ['email' => $error_message]], 401);
         }
 
         try {
@@ -222,7 +225,7 @@ class AuthController extends Controller
             $email = request('email');
 
             $this->sendEmailReset($email, $nama_persona, $uuid);
-            
+
             // Password::sendResetLink($request->only('email'), function (Message $message) {
             //     $message->subject('Your Password Reset Link');
             // });
@@ -234,16 +237,17 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'success' => true, 'data'=> ['message'=> 'A reset email has been sent! Please check your email.']
+            'success' => true, 'data' => ['message' => 'A reset email has been sent! Please check your email.']
         ]);
     }
 
     // To send email reset
-    public function sendEmailReset($email, $nama_persona, $uuid){
+    public function sendEmailReset($email, $nama_persona, $uuid)
+    {
         $mailData = [
             "uuid" => $uuid,
             "title" => "Reset Password",
-            "nama_persona" => "Hello!, ".$nama_persona,
+            "nama_persona" => "Hello!, " . $nama_persona,
             "body1" => "You are receiving this email because we are received a password reset request for your account",
             "body2" => "Please click on the link below or copy it into the address bar of your browser to change your password :",
         ];
@@ -253,37 +257,90 @@ class AuthController extends Controller
 
     // Reset Password 
     public function resetPassword($uuid, Request $request)
-   {
+    {
 
         //set validation
         $validator = Validator::make(request()->all(), [
             'password' => 'required|min:6|confirmed',
             'password_confirmation' => 'required|min:6'
-
         ]);
 
-        
+
         //if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
         $user = User::where('uuid', $uuid)->first();
+        $tokenUser = Uuid::uuid4()->getHex() . 'TokenUser' . date('ymd'); // toString();
 
         $user->update([
             'password'  => Hash::make(request('password')),
+            'userToken' => $tokenUser,
         ]);
 
         if ($user) {
             return response()->json([
-                'success'=> true,
-                'message'=> 'You have successfully updated your password.'
+                'success' => true,
+                'message' => 'You have successfully updated your password.'
             ]);
         } else {
             return response()->json([
-                'success'=> true,
-                'message'=> 'You have unsuccessfully updated your password.'
+                'success' => true,
+                'message' => 'You have unsuccessfully updated your password.'
             ]);
         }
-   }
+    }
+
+    public function resetPasswordUser($uuid, Request $request)
+    {
+        // Set validation
+        $validator = Validator::make(request()->all(), [
+            'old_password' => 'required',
+            'password' => 'required|min:6|confirmed|different:old_password',
+            'password_confirmation' => 'required|min:6'
+        ]);
+
+        // If validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = User::where('uuid', $uuid)->first();
+        $tokenUser = Uuid::uuid4()->getHex() . 'TokenUser' . date('ymd'); // toString();
+
+        if (is_null($user)) {
+            // Handle the case when the user is not found (you need to define the logic)
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found.'
+            ], 404);
+        }
+
+        // Check if the old password matches the current password
+        if (!Hash::check(request('old_password'), $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The provided old password does not match the current password.'
+            ], 422);
+        }
+
+        // Check if the new password is different from the old password
+        if (Hash::check(request('password'), $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The new password must be different from the old password.'
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make(request('password')),
+            'userToken' => $tokenUser
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'You have successfully updated your password.'
+        ]);
+    }
 }

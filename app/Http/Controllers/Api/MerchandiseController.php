@@ -183,10 +183,9 @@ class MerchandiseController extends Controller
     {
         $user = User::where('uuid', $user_uuid)->first();
 
-        if($user->role != 'admin'){
+        if ($user->role != 'admin') {
             $dataOrderMerchandises = OrderMerchandiseModel::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
-        }
-        else{
+        } else {
             $dataOrderMerchandises = OrderMerchandiseModel::orderBy('created_at', 'desc')->get();
         }
 
@@ -247,12 +246,12 @@ class MerchandiseController extends Controller
             $productData['UUIDProduk'] = $productData['uuidProduct'];
             $productData['quantity'] = $productData['totalPcsProduct'];
             $productData['notes'] = $productData['notesProduct'];
-        
+
             $dataProduct = MerchandiseModel::where('uuid', $productData['uuidProduct'])->first();
-        
+
             // Assuming 'orderProdukMerchandiseModel' is the Eloquent model for your database table
             orderProdukMerchandiseModel::create($productData);
-        
+
             // Update stock if $dataProduct is found
             if ($dataProduct) {
                 $dataProduct->update([
@@ -277,14 +276,14 @@ class MerchandiseController extends Controller
 
         $uploadDoc = $request->buktiTf->storeAs(
             'buktiTf_merchandise',
-            $image_name.'.'.$extension,
+            $image_name . '.' . $extension,
             ['disk' => 'public']
         );
 
         $dataMerchandise['buktiTf'] = $uploadDoc;
         $dataMerchandise['status'] = 1;
 
-        $data->update($dataMerchandise);    
+        $data->update($dataMerchandise);
 
         return response()->json(['message' => 'Order berhasil disimpan'], 200);
     }
@@ -295,7 +294,7 @@ class MerchandiseController extends Controller
 
         $dataMerchandise['noResi'] = $request->noResi;
 
-        $data->update($dataMerchandise);    
+        $data->update($dataMerchandise);
 
         return response()->json(['message' => 'Order berhasil disimpan'], 200);
     }
@@ -312,21 +311,20 @@ class MerchandiseController extends Controller
     }
 
     public function confirmPayment($uuid)
-{
-    // Find the record with the given UUID
-    $order = orderMerchandiseModel::where('uuid', $uuid)->first();
+    {
+        // Find the record with the given UUID
+        $order = orderMerchandiseModel::where('uuid', $uuid)->first();
 
-    // Check if the record exists
-    if ($order) {
-        // Update the 'confirm_buktiTf' field to 1
-        $order->update(['confirm_buktiTf' => 1]);
+        // Check if the record exists
+        if ($order) {
+            // Update the 'confirm_buktiTf' field to 1
+            $order->update(['confirm_buktiTf' => 1]);
 
-        // Return a JSON response indicating success
-        return response()->json(['success' => true, 'message' => 'Merchandise Successfully Updated']);
-    } else {
-        // Return a JSON response indicating failure (record not found)
-        return response()->json(['success' => false, 'message' => 'Merchandise not found'], 404);
+            // Return a JSON response indicating success
+            return response()->json(['success' => true, 'message' => 'Merchandise Successfully Updated']);
+        } else {
+            // Return a JSON response indicating failure (record not found)
+            return response()->json(['success' => false, 'message' => 'Merchandise not found'], 404);
+        }
     }
-}
-
 }

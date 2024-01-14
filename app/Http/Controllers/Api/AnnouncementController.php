@@ -15,7 +15,7 @@ class AnnouncementController extends Controller
     public function create(Request $request)
     {
         $storeData = $request->all();
-        $images = $request->file('images_announcement_path'); // Ganti 'images' sesuai dengan nama field yang digunakan dalam v-file-input
+        $images = $request->file('images_announcement_path');
 
         $validator = Validator::make($storeData, [
             'isi' => 'required',

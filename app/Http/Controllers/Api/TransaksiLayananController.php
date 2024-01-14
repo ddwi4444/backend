@@ -12,7 +12,7 @@ use Ramsey\Uuid\Uuid;
 
 class TransaksiLayananController extends Controller
 {
-    //Membuat Transaksi Layanan
+    
     public function create(Request $request, $idServicer)
     {
 

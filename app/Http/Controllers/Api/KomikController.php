@@ -15,7 +15,7 @@ use Validator;
 
 class KomikController extends Controller
 {
-    // Untuk membuat komik
+
     public function create(Request $request)
     {
         $storeData = $request->all();
@@ -93,7 +93,6 @@ class KomikController extends Controller
         ], 404);
     }
 
-    // Untuk mengupdate komik
     public function update(Request $request, $uuid)
     {
         $data = KomikModel::where('uuid', $uuid)->first();

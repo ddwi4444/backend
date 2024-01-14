@@ -30,7 +30,6 @@ class AuthController extends Controller
     //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
     // }
 
-    // Login
     public function register()
     {
         //set validation
@@ -44,6 +43,16 @@ class AuthController extends Controller
         //if validation fails
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
+        }
+
+        // Check for duplicate email or nama_persona
+            $existingUser = User::where('email', request('email'))
+            ->orWhere('nama_persona', request('nama_persona'))
+            ->first();
+
+        if ($existingUser) {
+        $message = $existingUser->email == request('email') ? 'Email is already in use.' : 'Nama Persona is already in use.';
+        return response()->json(['success' => false, 'message' => $message], 422);
         }
 
         $get_data = User::orderBy('created_at', 'DESC')->first();
@@ -126,11 +135,7 @@ class AuthController extends Controller
         return response()->json(['success' => false, 'error' => "Verification code is invalid."]);
     }
 
-    /****
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function login(Request $request)
     {
         $credentials = request(['email', 'password']);
@@ -141,8 +146,11 @@ class AuthController extends Controller
 
         try {
             // attempt to verify the credentials and create a token for the user
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['success' => false, 'error' => 'We cant find an account with this credentials. Please make sure you entered the right information and you have verified your email address or you can contact administrator.'], 404);
+            if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['success' => false, 
+                'error' => 'We cant find an account with this credentials. 
+                Please make sure you entered the right information and you 
+                have verified your email address or you can contact administrator.'], 404);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
@@ -153,7 +161,7 @@ class AuthController extends Controller
 
 
         // all good so return the token
-        return response()->json(['success' => true, 'data'=> [ 'token' => $token, 'user' => $user ]]);
+        return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => $user]]);
     }
 
     /**
@@ -255,7 +263,7 @@ class AuthController extends Controller
         Mail::to($email)->send(new RecoverPasswordMail($mailData));
     }
 
-    // Reset Password 
+    
     public function resetPassword($uuid, Request $request)
     {
 

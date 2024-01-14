@@ -84,7 +84,7 @@ class NPCController extends Controller
         ], 404);
     }
 
-    // Untuk mengupdate NPC
+    
     public function update(Request $request, $uuid)
     {
         $data = NPCModel::where('uuid', $uuid)->first();

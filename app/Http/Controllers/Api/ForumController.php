@@ -60,7 +60,7 @@ class ForumController extends Controller
         }
 
         return response([
-            'message' => 'Forum Successfully Added',
+            'message' => 'QnA Successfully Added',
             'data' => $forum,
         ], 200);
     }

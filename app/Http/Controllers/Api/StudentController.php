@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
-    // Untuk mengupdate komik
+    
     public function update(Request $request, $uuid)
     {
         $user = User::where('uuid', $uuid)->first();
@@ -20,30 +20,6 @@ class StudentController extends Controller
         if (is_null($user)) {
             return response()->json(['Failure' => true, 'message' => 'User not found']);
         }
-
-        $updateData = $request->all();
-        // $validator = Validator::make($updateData, [
-        //     'nama_persona' =>'required',
-        //     'bio' => 'required',
-        //     'umur' => 'required',
-        //     'tanggal_lahir' => 'required',
-        //     'zodiak' => 'required',
-        //     'ras' => 'required',
-        //     'tinggi_badan' => 'required',
-        //     'berat_badan' => 'required',
-        //     'MBTI' => 'required',
-        //     'hobi' => 'required',
-        //     'ig_acc' => 'required',
-        //     'like' => 'required',
-        //     'did_not_like' => 'required',
-        //     'quotes' => 'required',
-        //     'story_character' => 'required',
-        // ]);
-
-        //if validation fails
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors(), 422);
-        // }
 
         $dataUser = collect($request)->only(User::filters())->all();
 

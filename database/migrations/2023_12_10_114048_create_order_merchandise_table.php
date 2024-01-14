@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('alamat');
             $table->string('tlp');
-            $table->decimal('total_prices', 10, 2);
+            $table->unsignedBigInteger('total_prices');
             $table->string('buktiTf')->nullable();
             $table->string('noResi')->nullable();
             $table->integer('status');

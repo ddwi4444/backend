@@ -15,7 +15,7 @@ use Validator;
 
 class SubKomikController extends Controller
 {
-    // Untuk membuat komik
+
     public function create(Request $request, $id)
     {
         $dataKomikPusat = KomikModel::where('id', $id)->first();
@@ -92,7 +92,7 @@ class SubKomikController extends Controller
         $dataKomikPusat->update(['status' => 1]);
 
         return response([
-            'message' => 'Komik Successfully Added',
+            'message' => 'Subkomik Successfully Added',
             'data' => $komik,
         ], 200);
     }
@@ -116,7 +116,6 @@ class SubKomikController extends Controller
         ], 404);
     }
 
-    // Untuk mengupdate komik
     public function update(Request $request, $uuid)
     {
         $data = SubKomikModel::where('uuid', $uuid)->first();
@@ -182,7 +181,7 @@ class SubKomikController extends Controller
 
         $data->update($dataKomik);
 
-        return response()->json(['Success' => true, 'message' => 'Komik Successfully Changed']);
+        return response()->json(['Success' => true, 'message' => 'Subkomik Successfully Changed']);
     }
 
 

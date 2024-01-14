@@ -13,7 +13,7 @@ use Ramsey\Uuid\Uuid;
 
 class KomenForumController extends Controller
 {
-    // Membuat komen
+
     public function create(Request $request, $idForum)
     {
         $data = ForumModel::where('id', $idForum)->first();
@@ -68,7 +68,7 @@ class KomenForumController extends Controller
         }
 
         return response([
-            'message' => 'Komen Forum Successfully Added',
+            'message' => 'QnA Successfully Added',
             'data' => $komenForum,
         ], 200);
     }

@@ -99,6 +99,7 @@ class MerchandiseController extends Controller
     public function update(Request $request, $uuid)
     {
         $data = MerchandiseModel::where('uuid', $uuid)->first();
+        $images = $request->file('images_merchandise_path'); // Ganti 'images' sesuai dengan nama field yang digunakan dalam v-file-input
 
         if (is_null($data)) {
             return response()->json(['Failure' => true, 'message' => 'Data not found']);
@@ -138,7 +139,35 @@ class MerchandiseController extends Controller
 
         $data->update($dataMerchandise);
 
+        if (!empty($images)) {
+            // Delete all records in imagesMerchandiseModel where merchandise_id is equal to $data->id
+            imagesMerchandiseModel::where('merchandise_id', $data->id)->delete();
+        
+            // Delete the old thumbnail
+            Storage::delete("public/" . $data->thumbnail);
+        
+            foreach ($images as $image) {
+                // Store the new image
+                $imagePath = $image->store('/images-merchandise-path', 'public');
+        
+                // Create a new record in imagesMerchandiseModel
+                imagesMerchandiseModel::create([
+                    'merchandise_id' => $data->id,
+                    'images_merchandise_path' => $imagePath,
+                ]);
+            }
+        }        
+
         return response()->json(['Success' => true, 'message' => 'Merchandise Successfully Changed']);
+    }
+
+    public function getImagesMerchandise($idMerchandise){
+        $data = imagesMerchandiseModel::where('merchandise_id', $idMerchandise)->get();
+
+        return response([
+            'message' => 'Images merchandise is succesfully show',
+            'data' => $data,
+        ], 200);
     }
 
     public function delete($uuid)

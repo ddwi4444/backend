@@ -110,6 +110,7 @@ Route::post('submitFileBuktiTf/{uuidMerchandise}', [MerchandiseController::class
 Route::delete('deleteOrder/{uuidMerchandise}', [MerchandiseController::class, 'deleteOrder'])->middleware('allRole');
 Route::get('confirmPaymentMerchandise/{uuidMerchandise}', [MerchandiseController::class, 'confirmPayment'])->middleware('Admin');
 Route::post('submitAddNoResi/{uuidMerchandise}', [MerchandiseController::class, 'submitAddNoResi'])->middleware('allRole');
+Route::get('getImagesMerchandise/{idMerchandise}', [MerchandiseController::class, 'getImagesMerchandise']);
 
 // Portofolio
 Route::post('create-portfolio', [PortofolioController::class, 'create'])->middleware('StudentOsisAdmin');

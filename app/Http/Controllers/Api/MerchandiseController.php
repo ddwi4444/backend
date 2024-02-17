@@ -322,6 +322,7 @@ class MerchandiseController extends Controller
         $data = orderMerchandiseModel::where('uuid', $uuidMerchandise)->first();
 
         $dataMerchandise['noResi'] = $request->noResi;
+        $dataMerchandise['status'] = 2;
 
         $data->update($dataMerchandise);
 
